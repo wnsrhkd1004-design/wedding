@@ -1,0 +1,738 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+<title>청첩장</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Noto+Serif+KR:wght@300;400;600&family=Cormorant+Garamond:ital,wght@0,300;0,400;1,300;1,400&display=swap" rel="stylesheet">
+
+<style>
+/* ================================================
+   ✏️  여기서 개인정보 수정하세요
+================================================ */
+:root {
+  --groom-name: "홍길동";
+  --bride-name: "김영희";
+  --groom-father: "홍판서";
+  --groom-mother: "춘향모";
+  --bride-father: "김철수";
+  --bride-mother: "이영자";
+  --wedding-date: "2025년 6월 14일 토요일 오후 2시";
+  --wedding-place: "그랜드 볼룸 웨딩홀";
+  --wedding-address: "서울특별시 강남구 테헤란로 123";
+  --groom-account: "카카오뱅크 3333-12-3456789 홍길동";
+  --bride-account: "신한은행 110-123-456789 김영희";
+
+  /* 색상 테마 */
+  --bg: #faf8f5;
+  --text-dark: #1a1714;
+  --text-mid: #5a5350;
+  --text-light: #9a9290;
+  --accent: #8b7355;
+  --accent-light: #c4a882;
+  --line: #e8e0d8;
+}
+
+/* ================================================
+   📸 사진 설정 — src를 교체하세요
+   GitHub: 이미지를 repo에 업로드 후 상대경로 사용
+   예: images/main.jpg
+================================================ */
+
+* { margin: 0; padding: 0; box-sizing: border-box; }
+html { scroll-behavior: smooth; }
+
+body {
+  background: var(--bg);
+  font-family: 'Noto Serif KR', serif;
+  color: var(--text-dark);
+  max-width: 480px;
+  margin: 0 auto;
+  overflow-x: hidden;
+}
+
+/* ── 헤더 커버 ── */
+.cover {
+  position: relative;
+  height: 100svh;
+  min-height: 600px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-end;
+  padding-bottom: 60px;
+  overflow: hidden;
+}
+
+.cover-img {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  /* ✏️ 밝기 조절 */
+  filter: brightness(0.75);
+}
+
+/* 사진 없을 때 placeholder */
+.cover-placeholder {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(160deg, #c9b99a 0%, #8b7355 100%);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: rgba(255,255,255,0.3);
+  font-size: 14px;
+  letter-spacing: 2px;
+}
+
+.cover-content {
+  position: relative;
+  z-index: 1;
+  text-align: center;
+  color: #fff;
+}
+
+.cover-label {
+  font-family: 'Cormorant Garamond', serif;
+  font-style: italic;
+  font-size: 13px;
+  letter-spacing: 4px;
+  opacity: 0.85;
+  margin-bottom: 16px;
+}
+
+.cover-names {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 42px;
+  font-weight: 300;
+  letter-spacing: 2px;
+  line-height: 1.2;
+  margin-bottom: 20px;
+}
+
+.cover-date {
+  font-size: 13px;
+  font-weight: 300;
+  letter-spacing: 3px;
+  opacity: 0.9;
+}
+
+.scroll-hint {
+  position: absolute;
+  bottom: 20px;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 1;
+  animation: bounce 2s infinite;
+}
+.scroll-hint span {
+  display: block;
+  width: 1px;
+  height: 40px;
+  background: rgba(255,255,255,0.6);
+  margin: 0 auto;
+}
+
+@keyframes bounce {
+  0%, 100% { transform: translateX(-50%) translateY(0); }
+  50% { transform: translateX(-50%) translateY(6px); }
+}
+
+/* ── 섹션 공통 ── */
+section {
+  padding: 64px 32px;
+  border-bottom: 1px solid var(--line);
+  opacity: 0;
+  transform: translateY(24px);
+  transition: opacity 0.7s ease, transform 0.7s ease;
+}
+section.visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.section-label {
+  font-family: 'Cormorant Garamond', serif;
+  font-style: italic;
+  font-size: 12px;
+  letter-spacing: 4px;
+  color: var(--accent-light);
+  text-align: center;
+  margin-bottom: 32px;
+  display: block;
+}
+
+/* ── 인사말 ── */
+.greeting {
+  text-align: center;
+}
+.greeting .ornament {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 28px;
+  color: var(--accent-light);
+  margin-bottom: 24px;
+  display: block;
+}
+.greeting p {
+  font-size: 14.5px;
+  line-height: 2.2;
+  color: var(--text-mid);
+  word-break: keep-all;
+}
+
+/* ── 혼주 ── */
+.parents {
+  text-align: center;
+}
+.parents-row {
+  display: flex;
+  justify-content: center;
+  gap: 12px;
+  margin-bottom: 12px;
+  font-size: 14px;
+  color: var(--text-mid);
+  line-height: 1.8;
+}
+.parents-row .role {
+  color: var(--text-light);
+  font-size: 12px;
+  margin-right: 4px;
+}
+.parents-divider {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  margin: 20px 0;
+  color: var(--line);
+  font-size: 20px;
+}
+.parents-divider::before,
+.parents-divider::after {
+  content: '';
+  flex: 1;
+  height: 1px;
+  background: var(--line);
+}
+
+/* ── D-day ── */
+.dday-section {
+  text-align: center;
+  background: var(--text-dark);
+  color: #fff;
+  border-bottom: none;
+}
+.dday-section .section-label {
+  color: var(--accent-light);
+  opacity: 0.7;
+}
+.dday-number {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 80px;
+  font-weight: 300;
+  line-height: 1;
+  color: var(--accent-light);
+  margin: 8px 0;
+}
+.dday-number span { font-size: 32px; }
+.dday-label {
+  font-size: 13px;
+  letter-spacing: 3px;
+  color: rgba(255,255,255,0.5);
+  margin-top: 12px;
+}
+.dday-date-text {
+  font-size: 14px;
+  color: rgba(255,255,255,0.7);
+  margin-top: 8px;
+  line-height: 1.8;
+}
+
+/* ── 갤러리 ── */
+.gallery-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 8px;
+  margin-top: 8px;
+}
+.gallery-grid .wide {
+  grid-column: 1 / -1;
+}
+.gallery-item {
+  aspect-ratio: 1;
+  overflow: hidden;
+  background: var(--line);
+  position: relative;
+}
+.gallery-item.tall {
+  aspect-ratio: 2/3;
+}
+.gallery-item img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform 0.4s ease;
+}
+.gallery-item:active img {
+  transform: scale(1.03);
+}
+/* 사진 placeholder */
+.gallery-item::after {
+  content: attr(data-label);
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--text-light);
+  font-size: 12px;
+  letter-spacing: 1px;
+}
+.gallery-item img { position: relative; z-index: 1; }
+
+/* lightbox */
+.lightbox {
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.92);
+  z-index: 1000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.3s;
+}
+.lightbox.open {
+  opacity: 1;
+  pointer-events: all;
+}
+.lightbox img {
+  max-width: 95vw;
+  max-height: 90svh;
+  object-fit: contain;
+}
+.lightbox-close {
+  position: absolute;
+  top: 20px;
+  right: 20px;
+  width: 36px;
+  height: 36px;
+  background: none;
+  border: 1px solid rgba(255,255,255,0.3);
+  color: #fff;
+  border-radius: 50%;
+  font-size: 18px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* ── 위치 ── */
+.location-section { }
+.map-box {
+  width: 100%;
+  height: 240px;
+  background: var(--line);
+  margin: 16px 0;
+  position: relative;
+  overflow: hidden;
+}
+.map-box iframe {
+  width: 100%;
+  height: 100%;
+  border: none;
+}
+.location-name {
+  font-size: 18px;
+  font-weight: 400;
+  margin-bottom: 6px;
+}
+.location-address {
+  font-size: 13px;
+  color: var(--text-light);
+  line-height: 1.8;
+}
+.location-btns {
+  display: flex;
+  gap: 8px;
+  margin-top: 16px;
+}
+.btn {
+  flex: 1;
+  padding: 13px 0;
+  border: 1px solid var(--accent);
+  background: none;
+  color: var(--accent);
+  font-family: 'Noto Serif KR', serif;
+  font-size: 13px;
+  letter-spacing: 1px;
+  cursor: pointer;
+  transition: all 0.2s;
+  border-radius: 2px;
+}
+.btn:active, .btn:hover {
+  background: var(--accent);
+  color: #fff;
+}
+.btn.filled {
+  background: var(--accent);
+  color: #fff;
+}
+
+/* ── 계좌번호 ── */
+.account-section { }
+.account-card {
+  border: 1px solid var(--line);
+  padding: 20px 20px;
+  margin-bottom: 12px;
+  border-radius: 4px;
+}
+.account-role {
+  font-size: 11px;
+  letter-spacing: 3px;
+  color: var(--accent-light);
+  margin-bottom: 8px;
+}
+.account-name {
+  font-size: 16px;
+  margin-bottom: 4px;
+}
+.account-number {
+  font-size: 13px;
+  color: var(--text-mid);
+  letter-spacing: 0.5px;
+}
+.copy-btn {
+  float: right;
+  background: none;
+  border: 1px solid var(--line);
+  padding: 4px 12px;
+  font-size: 11px;
+  color: var(--text-light);
+  cursor: pointer;
+  border-radius: 2px;
+  font-family: 'Noto Serif KR', serif;
+  letter-spacing: 1px;
+  margin-top: -4px;
+}
+.copy-btn:active { background: var(--line); }
+
+/* ── 푸터 ── */
+footer {
+  text-align: center;
+  padding: 48px 32px 80px;
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 22px;
+  font-style: italic;
+  color: var(--text-light);
+  letter-spacing: 2px;
+}
+
+/* ── 토스트 ── */
+.toast {
+  position: fixed;
+  bottom: 32px;
+  left: 50%;
+  transform: translateX(-50%) translateY(20px);
+  background: var(--text-dark);
+  color: #fff;
+  padding: 10px 24px;
+  border-radius: 24px;
+  font-size: 13px;
+  opacity: 0;
+  transition: all 0.3s;
+  z-index: 999;
+  white-space: nowrap;
+}
+.toast.show {
+  opacity: 1;
+  transform: translateX(-50%) translateY(0);
+}
+</style>
+</head>
+<body>
+
+<!-- ✏️ JavaScript 상단 변수도 수정하세요 -->
+
+<!-- ── 커버 ── -->
+<div class="cover">
+  <!-- ✏️ src="images/main.jpg" 로 교체. 사진 없으면 이 img 태그 삭제 -->
+  <!-- <img class="cover-img" src="images/main.jpg" alt="커버"> -->
+  <div class="cover-placeholder">PHOTO</div>
+
+  <div class="cover-content">
+    <div class="cover-label">Wedding Invitation</div>
+    <div class="cover-names" id="coverNames"></div>
+    <div class="cover-date" id="coverDate"></div>
+  </div>
+  <div class="scroll-hint"><span></span></div>
+</div>
+
+<!-- ── 인사말 ── -->
+<section class="greeting" id="sec-greeting">
+  <span class="section-label">Greeting</span>
+  <span class="ornament">❦</span>
+  <p id="greetingText"></p>
+</section>
+
+<!-- ── 혼주 ── -->
+<section id="sec-parents">
+  <span class="section-label">Family</span>
+  <div class="parents">
+    <div id="parentsContent"></div>
+  </div>
+</section>
+
+<!-- ── D-day ── -->
+<section class="dday-section" id="sec-dday">
+  <span class="section-label">D-Day</span>
+  <div class="dday-number"><span>D-</span><span id="ddayNum">?</span></div>
+  <div class="dday-label">UNTIL THE WEDDING DAY</div>
+  <div class="dday-date-text" id="ddayDateText"></div>
+</section>
+
+<!-- ── 갤러리 ── -->
+<section id="sec-gallery">
+  <span class="section-label">Gallery</span>
+  <!--
+    ✏️ 사진 추가 방법:
+    1. GitHub repo에 images/ 폴더 생성 후 사진 업로드
+    2. 아래 data-label 속성 제거하고 <img> 태그 추가
+    예: <img src="images/photo1.jpg" alt="사진1">
+
+    wide 클래스 = 가로 전체
+    tall 클래스 = 세로 길게
+  -->
+  <div class="gallery-grid">
+    <div class="gallery-item wide" data-label="사진 1">
+      <!-- <img src="images/photo1.jpg" alt=""> -->
+    </div>
+    <div class="gallery-item" data-label="사진 2">
+      <!-- <img src="images/photo2.jpg" alt=""> -->
+    </div>
+    <div class="gallery-item" data-label="사진 3">
+      <!-- <img src="images/photo3.jpg" alt=""> -->
+    </div>
+    <div class="gallery-item wide" data-label="사진 4">
+      <!-- <img src="images/photo4.jpg" alt=""> -->
+    </div>
+    <div class="gallery-item tall" data-label="사진 5">
+      <!-- <img src="images/photo5.jpg" alt=""> -->
+    </div>
+    <div class="gallery-item tall" data-label="사진 6">
+      <!-- <img src="images/photo6.jpg" alt=""> -->
+    </div>
+  </div>
+</section>
+
+<!-- ── 위치 ── -->
+<section id="sec-location">
+  <span class="section-label">Location</span>
+  <div class="location-name" id="locName"></div>
+  <div class="location-address" id="locAddress"></div>
+
+  <div class="map-box" id="mapBox">
+    <!-- 카카오맵 또는 네이버맵 iframe이 JS로 삽입됩니다 -->
+  </div>
+
+  <div class="location-btns">
+    <button class="btn" onclick="openKakaoMap()">카카오맵</button>
+    <button class="btn" onclick="openNaverMap()">네이버맵</button>
+    <button class="btn filled" onclick="openTmap()">T맵 길찾기</button>
+  </div>
+</section>
+
+<!-- ── 계좌번호 ── -->
+<section id="sec-account">
+  <span class="section-label">Account</span>
+  <p style="font-size:13px;color:var(--text-light);text-align:center;margin-bottom:20px;line-height:1.8;">
+    축하의 마음을 전하고 싶으신 분들을 위해<br>계좌번호를 안내드립니다.
+  </p>
+  <div id="accountContent"></div>
+</section>
+
+<!-- ── 푸터 ── -->
+<footer>with love ♡</footer>
+
+<!-- Lightbox -->
+<div class="lightbox" id="lightbox">
+  <button class="lightbox-close" onclick="closeLightbox()">✕</button>
+  <img id="lightboxImg" src="" alt="">
+</div>
+
+<!-- Toast -->
+<div class="toast" id="toast"></div>
+
+<!-- ✏️ 카카오맵 API 키 필요 시: https://developers.kakao.com -->
+<script src="https://dapi.kakao.com/v2/maps/sdk.js?appkey=YOUR_KAKAO_KEY&libraries=services" onerror="mapFallback()"></script>
+
+<script>
+// ================================================
+// ✏️ 여기서 개인정보 수정하세요
+// ================================================
+const INFO = {
+  groomName: "홍길동",
+  brideName: "김영희",
+  groomFather: "홍판서",
+  groomMother: "춘향모",
+  brideFather: "김철수",
+  brideMother: "이영자",
+
+  // 날짜: JS Date 형식 (월은 0부터, 6=7월)
+  // ✏️ 예: 2025년 6월 14일 오후 2시 = new Date(2025, 5, 14, 14, 0)
+  weddingDate: new Date(2025, 5, 14, 14, 0),
+  weddingDateText: "2025년 6월 14일 토요일 오후 2시",
+
+  place: "그랜드 볼룸 웨딩홀",
+  address: "서울특별시 강남구 테헤란로 123",
+
+  // ✏️ 카카오맵 좌표 (장소 검색 후 복사)
+  // https://map.kakao.com 에서 장소 클릭 → 위도/경도 확인
+  lat: 37.5012,
+  lng: 127.0396,
+
+  groomAccount: "카카오뱅크 3333-12-3456789",
+  brideAccount: "신한은행 110-123-456789",
+
+  // ✏️ 인사말 수정
+  greeting: `저희 두 사람이\n사랑으로 하나가 되는 날,\n함께 자리하여 축복해 주시면\n더없이 기쁘겠습니다.\n\n소중한 걸음으로 찾아주실\n여러분을 기다립니다.`,
+};
+
+// ── 렌더링 ──
+document.getElementById('coverNames').textContent = `${INFO.groomName} · ${INFO.brideName}`;
+document.getElementById('coverDate').textContent = INFO.weddingDateText;
+document.getElementById('greetingText').innerHTML = INFO.greeting.replace(/\n/g, '<br>');
+document.getElementById('locName').textContent = INFO.place;
+document.getElementById('locAddress').textContent = INFO.address;
+document.getElementById('ddayDateText').textContent = INFO.weddingDateText;
+
+// 혼주
+document.getElementById('parentsContent').innerHTML = `
+  <div class="parents-row">
+    <div>
+      <span class="role">신랑측 부</span>${INFO.groomFather}<br>
+      <span class="role">신랑측 모</span>${INFO.groomMother}
+    </div>
+    <div class="parents-divider" style="flex-direction:column;gap:4px;margin:0 16px;">
+      <div style="width:1px;height:40px;background:var(--line);margin:0 auto;"></div>
+    </div>
+    <div>
+      <span class="role">신부측 부</span>${INFO.brideFather}<br>
+      <span class="role">신부측 모</span>${INFO.brideMother}
+    </div>
+  </div>
+  <div style="margin-top:16px;font-size:16px;">
+    ${INFO.groomName} <span style="color:var(--accent-light);margin:0 8px;">♡</span> ${INFO.brideName}
+  </div>
+`;
+
+// 계좌번호
+document.getElementById('accountContent').innerHTML = `
+  <div class="account-card">
+    <div class="account-role">GROOM · 신랑</div>
+    <div style="display:flex;justify-content:space-between;align-items:center;">
+      <div>
+        <div class="account-name">${INFO.groomName}</div>
+        <div class="account-number">${INFO.groomAccount}</div>
+      </div>
+      <button class="copy-btn" onclick="copyAccount('${INFO.groomAccount}')">복사</button>
+    </div>
+  </div>
+  <div class="account-card">
+    <div class="account-role">BRIDE · 신부</div>
+    <div style="display:flex;justify-content:space-between;align-items:center;">
+      <div>
+        <div class="account-name">${INFO.brideName}</div>
+        <div class="account-number">${INFO.brideAccount}</div>
+      </div>
+      <button class="copy-btn" onclick="copyAccount('${INFO.brideAccount}')">복사</button>
+    </div>
+  </div>
+`;
+
+// ── D-day 계산 ──
+function calcDday() {
+  const now = new Date();
+  const target = new Date(INFO.weddingDate);
+  target.setHours(0,0,0,0);
+  const today = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+  const diff = Math.ceil((target - today) / (1000 * 60 * 60 * 24));
+  const el = document.getElementById('ddayNum');
+  if (diff === 0) el.textContent = 'Day';
+  else if (diff < 0) el.innerHTML = `+${Math.abs(diff)}`;
+  else el.textContent = diff;
+}
+calcDday();
+
+// ── 카카오맵 ──
+let mapLoaded = false;
+function initMap() {
+  mapLoaded = true;
+  const container = document.getElementById('mapBox');
+  const options = { center: new kakao.maps.LatLng(INFO.lat, INFO.lng), level: 3 };
+  const map = new kakao.maps.Map(container, options);
+  const marker = new kakao.maps.Marker({ map, position: new kakao.maps.LatLng(INFO.lat, INFO.lng) });
+  const infowindow = new kakao.maps.InfoWindow({ content: `<div style="padding:6px 10px;font-size:12px;">${INFO.place}</div>` });
+  infowindow.open(map, marker);
+}
+function mapFallback() {
+  // 카카오맵 API 키 미설정 시 구글맵 embed로 대체
+  const q = encodeURIComponent(INFO.address);
+  document.getElementById('mapBox').innerHTML =
+    `<iframe src="https://maps.google.com/maps?q=${q}&output=embed" allowfullscreen></iframe>`;
+}
+// kakao SDK 로드 후 자동 실행
+window.kakao && window.kakao.maps ? kakao.maps.load(initMap) : null;
+
+// ── 지도 앱 열기 ──
+function openKakaoMap() {
+  window.open(`https://map.kakao.com/link/to/${encodeURIComponent(INFO.place)},${INFO.lat},${INFO.lng}`, '_blank');
+}
+function openNaverMap() {
+  window.open(`https://map.naver.com/v5/search/${encodeURIComponent(INFO.address)}`, '_blank');
+}
+function openTmap() {
+  window.open(`https://apis.openapi.sk.com/tmap/app/routes?appKey=undefined&goalname=${encodeURIComponent(INFO.place)}&goalx=${INFO.lng}&goaly=${INFO.lat}`, '_blank');
+}
+
+// ── 계좌번호 복사 ──
+function copyAccount(text) {
+  // 숫자만 추출해서 복사
+  const num = text.match(/[\d\-]+/)?.[0] || text;
+  navigator.clipboard.writeText(num).then(() => showToast('계좌번호가 복사되었습니다'));
+}
+
+// ── 토스트 ──
+function showToast(msg) {
+  const el = document.getElementById('toast');
+  el.textContent = msg;
+  el.classList.add('show');
+  setTimeout(() => el.classList.remove('show'), 2000);
+}
+
+// ── 갤러리 라이트박스 ──
+document.querySelectorAll('.gallery-item img').forEach(img => {
+  img.addEventListener('click', () => {
+    document.getElementById('lightboxImg').src = img.src;
+    document.getElementById('lightbox').classList.add('open');
+  });
+});
+function closeLightbox() {
+  document.getElementById('lightbox').classList.remove('open');
+}
+document.getElementById('lightbox').addEventListener('click', e => {
+  if (e.target === e.currentTarget) closeLightbox();
+});
+
+// ── 스크롤 애니메이션 ──
+const observer = new IntersectionObserver((entries) => {
+  entries.forEach(e => { if (e.isIntersecting) e.target.classList.add('visible'); });
+}, { threshold: 0.1 });
+document.querySelectorAll('section').forEach(s => observer.observe(s));
+</script>
+</body>
+</html>

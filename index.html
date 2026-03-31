@@ -5,280 +5,452 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
 <title>청첩장</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=Noto+Serif+KR:wght@300;400;600&family=Cormorant+Garamond:ital,wght@0,300;0,400;1,300;1,400&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Noto+Serif+KR:wght@300;400;600&family=IM+Fell+English:ital@0;1&family=Libre+Baskerville:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">
 
 <style>
-/* ================================================
-   ✏️  여기서 개인정보 수정하세요
-================================================ */
+/* =============================================
+   ✏️ 색상/텍스처 변수 (수정 불필요)
+============================================= */
 :root {
-  --groom-name: "홍길동";
-  --bride-name: "김영희";
-  --groom-father: "홍판서";
-  --groom-mother: "춘향모";
-  --bride-father: "김철수";
-  --bride-mother: "이영자";
-  --wedding-date: "2025년 6월 14일 토요일 오후 2시";
-  --wedding-place: "그랜드 볼룸 웨딩홀";
-  --wedding-address: "서울특별시 강남구 테헤란로 123";
-  --groom-account: "카카오뱅크 3333-12-3456789 홍길동";
-  --bride-account: "신한은행 110-123-456789 김영희";
-
-  /* 색상 테마 */
-  --bg: #faf8f5;
-  --text-dark: #1a1714;
-  --text-mid: #5a5350;
-  --text-light: #9a9290;
-  --accent: #8b7355;
-  --accent-light: #c4a882;
-  --line: #e8e0d8;
+  --paper: #f5ead8;
+  --paper-dark: #e8d5b0;
+  --ink: #2c1f0e;
+  --ink-mid: #5c4a30;
+  --ink-light: #9c8060;
+  --ink-faint: #c8b090;
+  --sepia: #8b6914;
+  --sepia-light: #c4a040;
+  --red-wax: #8b2020;
+  --line: #d4b87a;
 }
-
-/* ================================================
-   📸 사진 설정 — src를 교체하세요
-   GitHub: 이미지를 repo에 업로드 후 상대경로 사용
-   예: images/main.jpg
-================================================ */
 
 * { margin: 0; padding: 0; box-sizing: border-box; }
 html { scroll-behavior: smooth; }
 
 body {
-  background: var(--bg);
-  font-family: 'Noto Serif KR', serif;
-  color: var(--text-dark);
+  background: #2a1f12;
+  font-family: 'Noto Serif KR', 'Libre Baskerville', serif;
+  color: var(--ink);
   max-width: 480px;
   margin: 0 auto;
   overflow-x: hidden;
+  /* 배경 패턴: 낡은 나무 같은 질감 */
+  background-image: repeating-linear-gradient(
+    90deg,
+    transparent,
+    transparent 2px,
+    rgba(255,255,255,0.02) 2px,
+    rgba(255,255,255,0.02) 4px
+  );
 }
 
-/* ── 헤더 커버 ── */
+/* 종이 질감 noise overlay */
+body::before {
+  content: '';
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: 9999;
+  opacity: 0.04;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)'/%3E%3C/svg%3E");
+  background-size: 128px;
+}
+
+/* ── 페이지 래퍼 (종이) ── */
+.page {
+  background: var(--paper);
+  position: relative;
+  /* 종이 가장자리 그림자 */
+  box-shadow: -4px 0 20px rgba(0,0,0,0.4), 4px 0 20px rgba(0,0,0,0.4);
+}
+
+/* 종이 가장자리 번짐 효과 */
+.page::after {
+  content: '';
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: 100;
+  background: radial-gradient(ellipse at center, transparent 60%, rgba(42,31,18,0.25) 100%);
+  max-width: 480px;
+  left: 50%;
+  transform: translateX(-50%);
+}
+
+/* ── 장식 테두리 SVG ── */
+.ornament-border {
+  width: 100%;
+  text-align: center;
+  padding: 0 20px;
+  overflow: hidden;
+}
+.ornament-border svg {
+  width: 100%;
+  max-width: 380px;
+  opacity: 0.6;
+}
+
+/* ── 커버 ── */
 .cover {
   position: relative;
-  height: 100svh;
-  min-height: 600px;
+  min-height: 100svh;
   display: flex;
   flex-direction: column;
   align-items: center;
-  justify-content: flex-end;
-  padding-bottom: 60px;
+  justify-content: center;
+  padding: 48px 32px;
+  text-align: center;
   overflow: hidden;
+  background: var(--paper);
 }
 
+/* 커버 배경 사진 */
 .cover-img {
   position: absolute;
   inset: 0;
   width: 100%;
   height: 100%;
   object-fit: cover;
-  /* ✏️ 밝기 조절 */
-  filter: brightness(0.75);
+  filter: sepia(60%) brightness(0.6) contrast(1.1);
+  mix-blend-mode: multiply;
 }
-
-/* 사진 없을 때 placeholder */
 .cover-placeholder {
   position: absolute;
   inset: 0;
-  background: linear-gradient(160deg, #c9b99a 0%, #8b7355 100%);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  color: rgba(255,255,255,0.3);
-  font-size: 14px;
-  letter-spacing: 2px;
+  background: linear-gradient(160deg, #c8a86a 0%, #7a5820 50%, #3a2810 100%);
+  opacity: 0.35;
 }
 
-.cover-content {
+/* 커버 장식 프레임 */
+.cover-frame {
   position: relative;
-  z-index: 1;
-  text-align: center;
-  color: #fff;
+  z-index: 2;
+  width: 100%;
+  max-width: 360px;
+  border: 1px solid var(--sepia);
+  padding: 36px 28px;
+  /* 이중 테두리 */
+  box-shadow: inset 0 0 0 4px var(--paper), inset 0 0 0 6px var(--sepia-light);
+  background: rgba(245, 234, 216, 0.88);
 }
 
-.cover-label {
-  font-family: 'Cormorant Garamond', serif;
+.cover-pre {
+  font-family: 'IM Fell English', serif;
   font-style: italic;
-  font-size: 13px;
-  letter-spacing: 4px;
-  opacity: 0.85;
-  margin-bottom: 16px;
+  font-size: 11px;
+  letter-spacing: 5px;
+  color: var(--ink-light);
+  margin-bottom: 20px;
+  text-transform: uppercase;
+}
+
+.cover-flourish {
+  font-size: 28px;
+  color: var(--sepia);
+  margin: 10px 0;
+  line-height: 1;
 }
 
 .cover-names {
-  font-family: 'Cormorant Garamond', serif;
-  font-size: 42px;
-  font-weight: 300;
-  letter-spacing: 2px;
-  line-height: 1.2;
-  margin-bottom: 20px;
+  font-family: 'IM Fell English', serif;
+  font-size: 38px;
+  line-height: 1.3;
+  color: var(--ink);
+  margin: 8px 0 16px;
+  letter-spacing: 1px;
 }
 
+.cover-amp {
+  font-family: 'IM Fell English', serif;
+  font-style: italic;
+  font-size: 28px;
+  color: var(--sepia);
+  display: block;
+  margin: 4px 0;
+}
+
+.cover-divider {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin: 16px 0;
+  color: var(--sepia-light);
+}
+.cover-divider::before, .cover-divider::after {
+  content: '';
+  flex: 1;
+  height: 1px;
+  background: linear-gradient(to right, transparent, var(--line), transparent);
+}
+.cover-divider span { font-size: 14px; }
+
 .cover-date {
-  font-size: 13px;
-  font-weight: 300;
-  letter-spacing: 3px;
-  opacity: 0.9;
+  font-family: 'Libre Baskerville', serif;
+  font-size: 12px;
+  letter-spacing: 2.5px;
+  color: var(--ink-mid);
+  line-height: 2;
+}
+
+.wax-seal {
+  position: absolute;
+  bottom: -18px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 44px;
+  height: 44px;
+  background: var(--red-wax);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 18px;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.3), inset 0 1px 2px rgba(255,255,255,0.2);
+  color: rgba(255,255,255,0.7);
+  z-index: 3;
 }
 
 .scroll-hint {
   position: absolute;
-  bottom: 20px;
-  left: 50%;
-  transform: translateX(-50%);
-  z-index: 1;
-  animation: bounce 2s infinite;
+  bottom: 28px;
+  z-index: 3;
+  text-align: center;
 }
-.scroll-hint span {
-  display: block;
-  width: 1px;
-  height: 40px;
-  background: rgba(255,255,255,0.6);
-  margin: 0 auto;
-}
-
-@keyframes bounce {
-  0%, 100% { transform: translateX(-50%) translateY(0); }
-  50% { transform: translateX(-50%) translateY(6px); }
-}
-
-/* ── 섹션 공통 ── */
-section {
-  padding: 64px 32px;
-  border-bottom: 1px solid var(--line);
-  opacity: 0;
-  transform: translateY(24px);
-  transition: opacity 0.7s ease, transform 0.7s ease;
-}
-section.visible {
-  opacity: 1;
-  transform: translateY(0);
-}
-
-.section-label {
-  font-family: 'Cormorant Garamond', serif;
+.scroll-hint p {
+  font-family: 'IM Fell English', serif;
   font-style: italic;
-  font-size: 12px;
-  letter-spacing: 4px;
-  color: var(--accent-light);
+  font-size: 11px;
+  letter-spacing: 2px;
+  color: var(--ink-light);
+  margin-bottom: 8px;
+}
+.scroll-hint .arrow {
+  display: block;
+  animation: fadeDown 2s infinite;
+  color: var(--sepia-light);
+  font-size: 16px;
+}
+@keyframes fadeDown {
+  0%, 100% { opacity: 0.3; transform: translateY(0); }
+  50% { opacity: 1; transform: translateY(5px); }
+}
+
+/* ── 공통 섹션 ── */
+section {
+  padding: 56px 32px;
+  position: relative;
+  opacity: 0;
+  transform: translateY(20px);
+  transition: opacity 0.8s ease, transform 0.8s ease;
+}
+section.visible { opacity: 1; transform: translateY(0); }
+
+/* 섹션 구분선 — 장식적 */
+.section-sep {
+  text-align: center;
+  margin: 0 32px;
+  height: 24px;
+  position: relative;
+}
+.section-sep::before {
+  content: '';
+  position: absolute;
+  left: 0; right: 0; top: 50%;
+  height: 1px;
+  background: linear-gradient(to right, transparent, var(--line), transparent);
+}
+.section-sep span {
+  position: relative;
+  background: var(--paper);
+  padding: 0 12px;
+  color: var(--sepia-light);
+  font-size: 16px;
+}
+
+.section-title {
   text-align: center;
   margin-bottom: 32px;
+}
+.section-title .en {
+  font-family: 'IM Fell English', serif;
+  font-style: italic;
+  font-size: 11px;
+  letter-spacing: 5px;
+  color: var(--ink-faint);
+  text-transform: uppercase;
   display: block;
+  margin-bottom: 6px;
+}
+.section-title .ko {
+  font-size: 17px;
+  font-weight: 400;
+  color: var(--ink-mid);
+  letter-spacing: 2px;
 }
 
 /* ── 인사말 ── */
 .greeting {
   text-align: center;
+  background: var(--paper);
+  position: relative;
 }
-.greeting .ornament {
-  font-family: 'Cormorant Garamond', serif;
-  font-size: 28px;
-  color: var(--accent-light);
-  margin-bottom: 24px;
-  display: block;
+.greeting::before {
+  content: '"';
+  position: absolute;
+  top: 32px;
+  left: 28px;
+  font-family: 'IM Fell English', serif;
+  font-size: 80px;
+  color: var(--paper-dark);
+  line-height: 1;
+  pointer-events: none;
 }
 .greeting p {
-  font-size: 14.5px;
-  line-height: 2.2;
-  color: var(--text-mid);
+  font-size: 14px;
+  line-height: 2.4;
+  color: var(--ink-mid);
   word-break: keep-all;
+  position: relative;
+  z-index: 1;
 }
 
 /* ── 혼주 ── */
-.parents {
+.parents-box {
+  border: 1px solid var(--line);
+  padding: 28px 24px;
   text-align: center;
+  position: relative;
+  background: rgba(200,168,100,0.05);
 }
+/* 코너 장식 */
+.parents-box::before, .parents-box::after {
+  content: '❧';
+  position: absolute;
+  font-size: 20px;
+  color: var(--sepia-light);
+  opacity: 0.5;
+}
+.parents-box::before { top: 8px; left: 12px; }
+.parents-box::after { bottom: 8px; right: 12px; transform: rotate(180deg); }
+
 .parents-row {
-  display: flex;
-  justify-content: center;
-  gap: 12px;
-  margin-bottom: 12px;
-  font-size: 14px;
-  color: var(--text-mid);
-  line-height: 1.8;
+  display: grid;
+  grid-template-columns: 1fr auto 1fr;
+  gap: 16px;
+  align-items: center;
+  margin-bottom: 8px;
+  font-size: 13px;
+  line-height: 2;
+  color: var(--ink-mid);
+}
+.parents-row .divider-vert {
+  width: 1px;
+  height: 48px;
+  background: var(--line);
+  margin: 0 auto;
 }
 .parents-row .role {
-  color: var(--text-light);
-  font-size: 12px;
-  margin-right: 4px;
+  display: block;
+  font-size: 10px;
+  letter-spacing: 2px;
+  color: var(--ink-faint);
+  margin-bottom: 2px;
+  font-family: 'IM Fell English', serif;
+  font-style: italic;
 }
-.parents-divider {
-  display: flex;
-  align-items: center;
-  gap: 16px;
-  margin: 20px 0;
-  color: var(--line);
+.couple-name {
+  margin-top: 20px;
+  font-family: 'IM Fell English', serif;
   font-size: 20px;
+  color: var(--ink);
+  letter-spacing: 2px;
 }
-.parents-divider::before,
-.parents-divider::after {
-  content: '';
-  flex: 1;
-  height: 1px;
-  background: var(--line);
+.couple-name .amp {
+  font-style: italic;
+  color: var(--sepia);
+  margin: 0 10px;
 }
 
 /* ── D-day ── */
 .dday-section {
   text-align: center;
-  background: var(--text-dark);
-  color: #fff;
-  border-bottom: none;
+  background: var(--ink);
+  padding: 56px 32px;
+  position: relative;
+  overflow: hidden;
 }
-.dday-section .section-label {
-  color: var(--accent-light);
-  opacity: 0.7;
+.dday-section::before {
+  content: '';
+  position: absolute;
+  inset: 12px;
+  border: 1px solid rgba(196,160,64,0.3);
+  pointer-events: none;
 }
-.dday-number {
-  font-family: 'Cormorant Garamond', serif;
-  font-size: 80px;
-  font-weight: 300;
-  line-height: 1;
-  color: var(--accent-light);
-  margin: 8px 0;
+.dday-section .section-title .en { color: var(--sepia-light); opacity: 0.6; }
+.dday-section .section-title .ko { color: rgba(245,234,216,0.5); }
+
+.dday-inner {
+  position: relative;
 }
-.dday-number span { font-size: 32px; }
-.dday-label {
+.dday-big {
+  font-family: 'IM Fell English', serif;
+  font-size: 96px;
+  font-weight: 400;
+  line-height: 0.9;
+  color: var(--sepia-light);
+  letter-spacing: -2px;
+  margin: 16px 0 8px;
+}
+.dday-big small {
+  font-size: 36px;
+  vertical-align: middle;
+}
+.dday-sub {
+  font-family: 'IM Fell English', serif;
+  font-style: italic;
   font-size: 13px;
   letter-spacing: 3px;
-  color: rgba(255,255,255,0.5);
-  margin-top: 12px;
+  color: rgba(245,234,216,0.4);
+  margin-bottom: 12px;
 }
-.dday-date-text {
-  font-size: 14px;
-  color: rgba(255,255,255,0.7);
-  margin-top: 8px;
-  line-height: 1.8;
+.dday-date {
+  font-size: 13px;
+  color: rgba(245,234,216,0.55);
+  line-height: 2;
+  letter-spacing: 1px;
 }
 
 /* ── 갤러리 ── */
+.gallery-section { padding-bottom: 40px; }
 .gallery-grid {
   display: grid;
   grid-template-columns: repeat(2, 1fr);
-  gap: 8px;
+  gap: 6px;
   margin-top: 8px;
 }
-.gallery-grid .wide {
-  grid-column: 1 / -1;
-}
+.gallery-grid .full { grid-column: 1 / -1; }
 .gallery-item {
   aspect-ratio: 1;
   overflow: hidden;
-  background: var(--line);
+  background: var(--paper-dark);
   position: relative;
+  cursor: pointer;
 }
-.gallery-item.tall {
-  aspect-ratio: 2/3;
-}
+.gallery-item.tall { aspect-ratio: 2/3; }
 .gallery-item img {
   width: 100%;
   height: 100%;
   object-fit: cover;
-  transition: transform 0.4s ease;
+  filter: sepia(30%) contrast(1.05) brightness(0.95);
+  transition: filter 0.4s, transform 0.4s;
+  position: relative;
+  z-index: 1;
 }
 .gallery-item:active img {
+  filter: sepia(60%) contrast(1.1) brightness(0.85);
   transform: scale(1.03);
 }
-/* 사진 placeholder */
+/* placeholder */
 .gallery-item::after {
   content: attr(data-label);
   position: absolute;
@@ -286,17 +458,19 @@ section.visible {
   display: flex;
   align-items: center;
   justify-content: center;
-  color: var(--text-light);
-  font-size: 12px;
-  letter-spacing: 1px;
+  color: var(--ink-light);
+  font-size: 11px;
+  letter-spacing: 2px;
+  font-family: 'IM Fell English', serif;
+  font-style: italic;
 }
 .gallery-item img { position: relative; z-index: 1; }
 
-/* lightbox */
+/* Lightbox */
 .lightbox {
   position: fixed;
   inset: 0;
-  background: rgba(0,0,0,0.92);
+  background: rgba(20,12,4,0.96);
   z-index: 1000;
   display: flex;
   align-items: center;
@@ -305,131 +479,152 @@ section.visible {
   pointer-events: none;
   transition: opacity 0.3s;
 }
-.lightbox.open {
-  opacity: 1;
-  pointer-events: all;
-}
+.lightbox.open { opacity: 1; pointer-events: all; }
 .lightbox img {
   max-width: 95vw;
   max-height: 90svh;
   object-fit: contain;
+  filter: sepia(20%);
+  border: 2px solid rgba(196,160,64,0.3);
 }
 .lightbox-close {
   position: absolute;
-  top: 20px;
-  right: 20px;
-  width: 36px;
-  height: 36px;
+  top: 20px; right: 20px;
   background: none;
-  border: 1px solid rgba(255,255,255,0.3);
-  color: #fff;
+  border: 1px solid rgba(196,160,64,0.4);
+  color: var(--sepia-light);
+  width: 36px; height: 36px;
   border-radius: 50%;
-  font-size: 18px;
+  font-size: 16px;
   cursor: pointer;
-  display: flex;
-  align-items: center;
-  justify-content: center;
+  display: flex; align-items: center; justify-content: center;
+  font-family: 'IM Fell English', serif;
 }
 
 /* ── 위치 ── */
-.location-section { }
 .map-box {
   width: 100%;
-  height: 240px;
-  background: var(--line);
+  height: 220px;
+  background: var(--paper-dark);
   margin: 16px 0;
-  position: relative;
   overflow: hidden;
+  border: 1px solid var(--line);
+  position: relative;
+  /* 세피아 오버레이 */
+  filter: sepia(20%);
 }
-.map-box iframe {
-  width: 100%;
-  height: 100%;
-  border: none;
-}
+.map-box iframe { width: 100%; height: 100%; border: none; }
+
 .location-name {
-  font-size: 18px;
-  font-weight: 400;
+  font-family: 'IM Fell English', serif;
+  font-size: 22px;
+  color: var(--ink);
   margin-bottom: 6px;
+  letter-spacing: 1px;
 }
 .location-address {
-  font-size: 13px;
-  color: var(--text-light);
-  line-height: 1.8;
+  font-size: 12px;
+  color: var(--ink-light);
+  line-height: 2;
+  letter-spacing: 0.5px;
 }
-.location-btns {
-  display: flex;
-  gap: 8px;
-  margin-top: 16px;
-}
+
+.btn-row { display: flex; gap: 8px; margin-top: 16px; }
 .btn {
   flex: 1;
-  padding: 13px 0;
-  border: 1px solid var(--accent);
-  background: none;
-  color: var(--accent);
+  padding: 12px 0;
+  border: 1px solid var(--line);
+  background: transparent;
+  color: var(--ink-mid);
   font-family: 'Noto Serif KR', serif;
-  font-size: 13px;
+  font-size: 12px;
   letter-spacing: 1px;
   cursor: pointer;
   transition: all 0.2s;
-  border-radius: 2px;
 }
 .btn:active, .btn:hover {
-  background: var(--accent);
-  color: #fff;
+  background: var(--ink);
+  color: var(--paper);
+  border-color: var(--ink);
 }
-.btn.filled {
-  background: var(--accent);
-  color: #fff;
+.btn.primary {
+  background: var(--ink);
+  color: var(--paper);
+  border-color: var(--ink);
 }
 
 /* ── 계좌번호 ── */
-.account-section { }
+.account-note {
+  font-size: 13px;
+  color: var(--ink-light);
+  text-align: center;
+  line-height: 2.2;
+  margin-bottom: 24px;
+  font-family: 'IM Fell English', serif;
+  font-style: italic;
+}
 .account-card {
   border: 1px solid var(--line);
   padding: 20px 20px;
-  margin-bottom: 12px;
-  border-radius: 4px;
+  margin-bottom: 10px;
+  position: relative;
+  background: rgba(200,168,100,0.04);
+}
+.account-card::before {
+  content: '';
+  position: absolute;
+  top: 4px; left: 4px; right: 4px; bottom: 4px;
+  border: 1px solid rgba(196,160,64,0.15);
+  pointer-events: none;
 }
 .account-role {
+  font-family: 'IM Fell English', serif;
+  font-style: italic;
   font-size: 11px;
   letter-spacing: 3px;
-  color: var(--accent-light);
+  color: var(--sepia-light);
   margin-bottom: 8px;
 }
-.account-name {
-  font-size: 16px;
-  margin-bottom: 4px;
+.account-info {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
 }
-.account-number {
-  font-size: 13px;
-  color: var(--text-mid);
-  letter-spacing: 0.5px;
-}
+.account-name { font-size: 16px; margin-bottom: 3px; }
+.account-number { font-size: 12px; color: var(--ink-light); letter-spacing: 0.5px; }
 .copy-btn {
-  float: right;
   background: none;
   border: 1px solid var(--line);
-  padding: 4px 12px;
+  padding: 5px 14px;
   font-size: 11px;
-  color: var(--text-light);
+  color: var(--ink-light);
   cursor: pointer;
-  border-radius: 2px;
-  font-family: 'Noto Serif KR', serif;
+  font-family: 'IM Fell English', serif;
+  font-style: italic;
   letter-spacing: 1px;
-  margin-top: -4px;
+  transition: all 0.2s;
+  white-space: nowrap;
 }
-.copy-btn:active { background: var(--line); }
+.copy-btn:active { background: var(--ink); color: var(--paper); border-color: var(--ink); }
 
 /* ── 푸터 ── */
 footer {
   text-align: center;
   padding: 48px 32px 80px;
-  font-family: 'Cormorant Garamond', serif;
-  font-size: 22px;
+  background: var(--paper);
+}
+.footer-flourish {
+  font-family: 'IM Fell English', serif;
   font-style: italic;
-  color: var(--text-light);
-  letter-spacing: 2px;
+  font-size: 14px;
+  color: var(--ink-light);
+  letter-spacing: 3px;
+  margin-bottom: 12px;
+}
+.footer-ornament {
+  font-size: 22px;
+  color: var(--sepia-light);
+  opacity: 0.6;
 }
 
 /* ── 토스트 ── */
@@ -438,125 +633,174 @@ footer {
   bottom: 32px;
   left: 50%;
   transform: translateX(-50%) translateY(20px);
-  background: var(--text-dark);
-  color: #fff;
+  background: var(--ink);
+  color: var(--paper);
   padding: 10px 24px;
-  border-radius: 24px;
+  font-family: 'IM Fell English', serif;
+  font-style: italic;
   font-size: 13px;
+  border: 1px solid var(--sepia);
   opacity: 0;
   transition: all 0.3s;
-  z-index: 999;
+  z-index: 9998;
   white-space: nowrap;
+  letter-spacing: 1px;
 }
-.toast.show {
-  opacity: 1;
-  transform: translateX(-50%) translateY(0);
-}
+.toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
 </style>
 </head>
 <body>
-
-<!-- ✏️ JavaScript 상단 변수도 수정하세요 -->
+<div class="page">
 
 <!-- ── 커버 ── -->
 <div class="cover">
-  <!-- ✏️ src="images/main.jpg" 로 교체. 사진 없으면 이 img 태그 삭제 -->
-  <!-- <img class="cover-img" src="images/main.jpg" alt="커버"> -->
-  <div class="cover-placeholder">PHOTO</div>
+  <!-- ✏️ <img class="cover-img" src="images/main.jpg" alt=""> 로 교체 -->
+  <div class="cover-placeholder"></div>
 
-  <div class="cover-content">
-    <div class="cover-label">Wedding Invitation</div>
-    <div class="cover-names" id="coverNames"></div>
+  <div class="cover-frame">
+    <div class="cover-pre">Wedding Invitation</div>
+
+    <!-- 상단 장식 -->
+    <svg width="160" height="16" viewBox="0 0 160 16" fill="none" style="margin:0 auto 16px;display:block;opacity:0.5">
+      <line x1="0" y1="8" x2="60" y2="8" stroke="#8b6914" stroke-width="0.5"/>
+      <path d="M72 8 Q80 2 88 8 Q80 14 72 8Z" fill="#8b6914" opacity="0.7"/>
+      <circle cx="80" cy="8" r="2" fill="#8b6914"/>
+      <line x1="100" y1="8" x2="160" y2="8" stroke="#8b6914" stroke-width="0.5"/>
+    </svg>
+
+    <div class="cover-names">
+      <span id="coverGroom"></span>
+      <span class="cover-amp">&</span>
+      <span id="coverBride"></span>
+    </div>
+
+    <div class="cover-divider"><span>✦</span></div>
+
     <div class="cover-date" id="coverDate"></div>
+
+    <!-- 하단 장식 -->
+    <svg width="120" height="12" viewBox="0 0 120 12" fill="none" style="margin:16px auto 0;display:block;opacity:0.4">
+      <line x1="0" y1="6" x2="40" y2="6" stroke="#8b6914" stroke-width="0.5"/>
+      <circle cx="60" cy="6" r="3" stroke="#8b6914" stroke-width="0.5"/>
+      <circle cx="60" cy="6" r="1.5" fill="#8b6914"/>
+      <line x1="80" y1="6" x2="120" y2="6" stroke="#8b6914" stroke-width="0.5"/>
+    </svg>
+
+    <div class="wax-seal">♡</div>
   </div>
-  <div class="scroll-hint"><span></span></div>
+
+  <div class="scroll-hint">
+    <p>scroll</p>
+    <span class="arrow">↓</span>
+  </div>
 </div>
 
 <!-- ── 인사말 ── -->
-<section class="greeting" id="sec-greeting">
-  <span class="section-label">Greeting</span>
-  <span class="ornament">❦</span>
+<div class="section-sep"><span>❦</span></div>
+<section class="greeting" id="sec1">
+  <div class="section-title">
+    <span class="en">Greeting</span>
+    <span class="ko">인 사 말</span>
+  </div>
   <p id="greetingText"></p>
 </section>
 
 <!-- ── 혼주 ── -->
-<section id="sec-parents">
-  <span class="section-label">Family</span>
-  <div class="parents">
-    <div id="parentsContent"></div>
+<div class="section-sep"><span>❦</span></div>
+<section id="sec2" style="padding:48px 32px;">
+  <div class="section-title">
+    <span class="en">Family</span>
+    <span class="ko">혼 주</span>
   </div>
+  <div class="parents-box" id="parentsBox"></div>
 </section>
 
 <!-- ── D-day ── -->
-<section class="dday-section" id="sec-dday">
-  <span class="section-label">D-Day</span>
-  <div class="dday-number"><span>D-</span><span id="ddayNum">?</span></div>
-  <div class="dday-label">UNTIL THE WEDDING DAY</div>
-  <div class="dday-date-text" id="ddayDateText"></div>
+<section class="dday-section" id="sec3">
+  <div class="section-title">
+    <span class="en">Until the Day</span>
+    <span class="ko"></span>
+  </div>
+  <div class="dday-inner">
+    <div class="dday-big"><small>D—</small><span id="ddayNum">?</span></div>
+    <div class="dday-sub">days remaining</div>
+    <div class="dday-date" id="ddayDate"></div>
+  </div>
 </section>
 
 <!-- ── 갤러리 ── -->
-<section id="sec-gallery">
-  <span class="section-label">Gallery</span>
+<div class="section-sep"><span>❦</span></div>
+<section class="gallery-section" id="sec4">
+  <div class="section-title">
+    <span class="en">Gallery</span>
+    <span class="ko">사 진</span>
+  </div>
   <!--
-    ✏️ 사진 추가 방법:
-    1. GitHub repo에 images/ 폴더 생성 후 사진 업로드
-    2. 아래 data-label 속성 제거하고 <img> 태그 추가
-    예: <img src="images/photo1.jpg" alt="사진1">
-
-    wide 클래스 = 가로 전체
-    tall 클래스 = 세로 길게
+    ✏️ 사진 추가:
+    images/ 폴더에 업로드 후 아래 <img> 주석 해제
+    full 클래스 = 가로 전체, tall = 세로 길게
   -->
   <div class="gallery-grid">
-    <div class="gallery-item wide" data-label="사진 1">
+    <div class="gallery-item full" data-label="photo I">
       <!-- <img src="images/photo1.jpg" alt=""> -->
     </div>
-    <div class="gallery-item" data-label="사진 2">
+    <div class="gallery-item" data-label="photo II">
       <!-- <img src="images/photo2.jpg" alt=""> -->
     </div>
-    <div class="gallery-item" data-label="사진 3">
+    <div class="gallery-item" data-label="photo III">
       <!-- <img src="images/photo3.jpg" alt=""> -->
     </div>
-    <div class="gallery-item wide" data-label="사진 4">
+    <div class="gallery-item tall" data-label="photo IV">
       <!-- <img src="images/photo4.jpg" alt=""> -->
     </div>
-    <div class="gallery-item tall" data-label="사진 5">
+    <div class="gallery-item tall" data-label="photo V">
       <!-- <img src="images/photo5.jpg" alt=""> -->
     </div>
-    <div class="gallery-item tall" data-label="사진 6">
+    <div class="gallery-item full" data-label="photo VI">
       <!-- <img src="images/photo6.jpg" alt=""> -->
     </div>
   </div>
 </section>
 
 <!-- ── 위치 ── -->
-<section id="sec-location">
-  <span class="section-label">Location</span>
-  <div class="location-name" id="locName"></div>
-  <div class="location-address" id="locAddress"></div>
-
-  <div class="map-box" id="mapBox">
-    <!-- 카카오맵 또는 네이버맵 iframe이 JS로 삽입됩니다 -->
+<div class="section-sep"><span>❦</span></div>
+<section id="sec5">
+  <div class="section-title">
+    <span class="en">Location</span>
+    <span class="ko">오 시 는 길</span>
   </div>
-
-  <div class="location-btns">
-    <button class="btn" onclick="openKakaoMap()">카카오맵</button>
-    <button class="btn" onclick="openNaverMap()">네이버맵</button>
-    <button class="btn filled" onclick="openTmap()">T맵 길찾기</button>
+  <div class="location-name" id="locName"></div>
+  <div class="location-address" id="locAddr"></div>
+  <div class="map-box" id="mapBox"></div>
+  <div class="btn-row">
+    <button class="btn" onclick="openKakao()">카카오맵</button>
+    <button class="btn" onclick="openNaver()">네이버맵</button>
+    <button class="btn primary" onclick="openTmap()">T맵</button>
   </div>
 </section>
 
 <!-- ── 계좌번호 ── -->
-<section id="sec-account">
-  <span class="section-label">Account</span>
-  <p style="font-size:13px;color:var(--text-light);text-align:center;margin-bottom:20px;line-height:1.8;">
-    축하의 마음을 전하고 싶으신 분들을 위해<br>계좌번호를 안내드립니다.
+<div class="section-sep"><span>❦</span></div>
+<section id="sec6">
+  <div class="section-title">
+    <span class="en">Account</span>
+    <span class="ko">마음 전하기</span>
+  </div>
+  <p class="account-note">
+    함께해 주시는 것만으로도 충분하지만,<br>
+    축하의 마음을 전하고 싶으신 분들께
   </p>
-  <div id="accountContent"></div>
+  <div id="accountBox"></div>
 </section>
 
 <!-- ── 푸터 ── -->
-<footer>with love ♡</footer>
+<div class="section-sep"><span>❦</span></div>
+<footer>
+  <div class="footer-flourish">with all our love</div>
+  <div class="footer-ornament">❦</div>
+</footer>
+
+</div><!-- .page -->
 
 <!-- Lightbox -->
 <div class="lightbox" id="lightbox">
@@ -567,141 +811,111 @@ footer {
 <!-- Toast -->
 <div class="toast" id="toast"></div>
 
-<!-- ✏️ 카카오맵 API 키 필요 시: https://developers.kakao.com -->
-<script src="https://dapi.kakao.com/v2/maps/sdk.js?appkey=YOUR_KAKAO_KEY&libraries=services" onerror="mapFallback()"></script>
+
 
 <script>
 // ================================================
-// ✏️ 여기서 개인정보 수정하세요
+// ✏️ 개인정보 수정하세요
 // ================================================
 const INFO = {
-  groomName: "홍길동",
-  brideName: "김영희",
+  groomName:   "홍길동",
+  brideName:   "김영희",
   groomFather: "홍판서",
   groomMother: "춘향모",
   brideFather: "김철수",
   brideMother: "이영자",
 
-  // 날짜: JS Date 형식 (월은 0부터, 6=7월)
-  // ✏️ 예: 2025년 6월 14일 오후 2시 = new Date(2025, 5, 14, 14, 0)
-  weddingDate: new Date(2025, 5, 14, 14, 0),
+  // ✏️ 날짜: new Date(년, 월-1, 일, 시, 분)
+  weddingDate:     new Date(2025, 5, 14, 14, 0),
   weddingDateText: "2025년 6월 14일 토요일 오후 2시",
 
-  place: "그랜드 볼룸 웨딩홀",
+  place:   "그랜드 볼룸 웨딩홀",
   address: "서울특별시 강남구 테헤란로 123",
 
-  // ✏️ 카카오맵 좌표 (장소 검색 후 복사)
-  // https://map.kakao.com 에서 장소 클릭 → 위도/경도 확인
+  // ✏️ 좌표 (구글맵 검색용 — 없어도 address로 검색됨)
   lat: 37.5012,
   lng: 127.0396,
 
   groomAccount: "카카오뱅크 3333-12-3456789",
-  brideAccount: "신한은행 110-123-456789",
+  brideAccount:  "신한은행 110-123-456789",
 
   // ✏️ 인사말 수정
   greeting: `저희 두 사람이\n사랑으로 하나가 되는 날,\n함께 자리하여 축복해 주시면\n더없이 기쁘겠습니다.\n\n소중한 걸음으로 찾아주실\n여러분을 기다립니다.`,
 };
 
 // ── 렌더링 ──
-document.getElementById('coverNames').textContent = `${INFO.groomName} · ${INFO.brideName}`;
-document.getElementById('coverDate').textContent = INFO.weddingDateText;
-document.getElementById('greetingText').innerHTML = INFO.greeting.replace(/\n/g, '<br>');
-document.getElementById('locName').textContent = INFO.place;
-document.getElementById('locAddress').textContent = INFO.address;
-document.getElementById('ddayDateText').textContent = INFO.weddingDateText;
+document.getElementById('coverGroom').textContent  = INFO.groomName;
+document.getElementById('coverBride').textContent  = INFO.brideName;
+document.getElementById('coverDate').innerHTML     = INFO.weddingDateText.replace(' ', '<br>');
+document.getElementById('greetingText').innerHTML  = INFO.greeting.replace(/\n/g, '<br>');
+document.getElementById('locName').textContent     = INFO.place;
+document.getElementById('locAddr').textContent     = INFO.address;
+document.getElementById('ddayDate').textContent    = INFO.weddingDateText;
 
 // 혼주
-document.getElementById('parentsContent').innerHTML = `
+document.getElementById('parentsBox').innerHTML = `
   <div class="parents-row">
-    <div>
-      <span class="role">신랑측 부</span>${INFO.groomFather}<br>
-      <span class="role">신랑측 모</span>${INFO.groomMother}
+    <div style="text-align:right">
+      <span class="role">Groom's Father</span>${INFO.groomFather}<br>
+      <span class="role">Groom's Mother</span>${INFO.groomMother}
     </div>
-    <div class="parents-divider" style="flex-direction:column;gap:4px;margin:0 16px;">
-      <div style="width:1px;height:40px;background:var(--line);margin:0 auto;"></div>
-    </div>
-    <div>
-      <span class="role">신부측 부</span>${INFO.brideFather}<br>
-      <span class="role">신부측 모</span>${INFO.brideMother}
+    <div class="divider-vert"></div>
+    <div style="text-align:left">
+      <span class="role">Bride's Father</span>${INFO.brideFather}<br>
+      <span class="role">Bride's Mother</span>${INFO.brideMother}
     </div>
   </div>
-  <div style="margin-top:16px;font-size:16px;">
-    ${INFO.groomName} <span style="color:var(--accent-light);margin:0 8px;">♡</span> ${INFO.brideName}
-  </div>
+  <div class="couple-name">${INFO.groomName}<span class="amp">&</span>${INFO.brideName}</div>
 `;
 
 // 계좌번호
-document.getElementById('accountContent').innerHTML = `
+document.getElementById('accountBox').innerHTML = `
   <div class="account-card">
-    <div class="account-role">GROOM · 신랑</div>
-    <div style="display:flex;justify-content:space-between;align-items:center;">
+    <div class="account-role">Groom · 신랑</div>
+    <div class="account-info">
       <div>
         <div class="account-name">${INFO.groomName}</div>
         <div class="account-number">${INFO.groomAccount}</div>
       </div>
-      <button class="copy-btn" onclick="copyAccount('${INFO.groomAccount}')">복사</button>
+      <button class="copy-btn" onclick="copyAccount('${INFO.groomAccount}')">copy</button>
     </div>
   </div>
   <div class="account-card">
-    <div class="account-role">BRIDE · 신부</div>
-    <div style="display:flex;justify-content:space-between;align-items:center;">
+    <div class="account-role">Bride · 신부</div>
+    <div class="account-info">
       <div>
         <div class="account-name">${INFO.brideName}</div>
         <div class="account-number">${INFO.brideAccount}</div>
       </div>
-      <button class="copy-btn" onclick="copyAccount('${INFO.brideAccount}')">복사</button>
+      <button class="copy-btn" onclick="copyAccount('${INFO.brideAccount}')">copy</button>
     </div>
   </div>
 `;
 
-// ── D-day 계산 ──
-function calcDday() {
-  const now = new Date();
-  const target = new Date(INFO.weddingDate);
-  target.setHours(0,0,0,0);
-  const today = new Date(now.getFullYear(), now.getMonth(), now.getDate());
-  const diff = Math.ceil((target - today) / (1000 * 60 * 60 * 24));
+// ── D-day ──
+(function() {
+  const today  = new Date(); today.setHours(0,0,0,0);
+  const target = new Date(INFO.weddingDate); target.setHours(0,0,0,0);
+  const diff   = Math.ceil((target - today) / 86400000);
   const el = document.getElementById('ddayNum');
-  if (diff === 0) el.textContent = 'Day';
-  else if (diff < 0) el.innerHTML = `+${Math.abs(diff)}`;
-  else el.textContent = diff;
-}
-calcDday();
+  if (diff === 0)      el.parentElement.innerHTML = `<div class="dday-big">D—Day</div>`;
+  else if (diff < 0)   el.textContent = `+${Math.abs(diff)}`;
+  else                 el.textContent = diff;
+})();
 
-// ── 카카오맵 ──
-let mapLoaded = false;
-function initMap() {
-  mapLoaded = true;
-  const container = document.getElementById('mapBox');
-  const options = { center: new kakao.maps.LatLng(INFO.lat, INFO.lng), level: 3 };
-  const map = new kakao.maps.Map(container, options);
-  const marker = new kakao.maps.Marker({ map, position: new kakao.maps.LatLng(INFO.lat, INFO.lng) });
-  const infowindow = new kakao.maps.InfoWindow({ content: `<div style="padding:6px 10px;font-size:12px;">${INFO.place}</div>` });
-  infowindow.open(map, marker);
-}
-function mapFallback() {
-  // 카카오맵 API 키 미설정 시 구글맵 embed로 대체
+// ── 지도 (구글맵 embed) ──
+(function() {
   const q = encodeURIComponent(INFO.address);
   document.getElementById('mapBox').innerHTML =
     `<iframe src="https://maps.google.com/maps?q=${q}&output=embed" allowfullscreen></iframe>`;
-}
-// kakao SDK 로드 후 자동 실행
-window.kakao && window.kakao.maps ? kakao.maps.load(initMap) : null;
+})();
 
-// ── 지도 앱 열기 ──
-function openKakaoMap() {
-  window.open(`https://map.kakao.com/link/to/${encodeURIComponent(INFO.place)},${INFO.lat},${INFO.lng}`, '_blank');
-}
-function openNaverMap() {
-  window.open(`https://map.naver.com/v5/search/${encodeURIComponent(INFO.address)}`, '_blank');
-}
-function openTmap() {
-  window.open(`https://apis.openapi.sk.com/tmap/app/routes?appKey=undefined&goalname=${encodeURIComponent(INFO.place)}&goalx=${INFO.lng}&goaly=${INFO.lat}`, '_blank');
-}
+function openKakao() { window.open(`https://map.kakao.com/link/to/${encodeURIComponent(INFO.place)},${INFO.lat},${INFO.lng}`, '_blank'); }
+function openNaver() { window.open(`https://map.naver.com/v5/search/${encodeURIComponent(INFO.address)}`, '_blank'); }
+function openTmap()  { window.open(`https://tmap.life/route?goalname=${encodeURIComponent(INFO.place)}&goalx=${INFO.lng}&goaly=${INFO.lat}`, '_blank'); }
 
-// ── 계좌번호 복사 ──
+// ── 계좌 복사 ──
 function copyAccount(text) {
-  // 숫자만 추출해서 복사
   const num = text.match(/[\d\-]+/)?.[0] || text;
   navigator.clipboard.writeText(num).then(() => showToast('계좌번호가 복사되었습니다'));
 }
@@ -711,7 +925,7 @@ function showToast(msg) {
   const el = document.getElementById('toast');
   el.textContent = msg;
   el.classList.add('show');
-  setTimeout(() => el.classList.remove('show'), 2000);
+  setTimeout(() => el.classList.remove('show'), 2200);
 }
 
 // ── 갤러리 라이트박스 ──
@@ -721,18 +935,16 @@ document.querySelectorAll('.gallery-item img').forEach(img => {
     document.getElementById('lightbox').classList.add('open');
   });
 });
-function closeLightbox() {
-  document.getElementById('lightbox').classList.remove('open');
-}
+function closeLightbox() { document.getElementById('lightbox').classList.remove('open'); }
 document.getElementById('lightbox').addEventListener('click', e => {
   if (e.target === e.currentTarget) closeLightbox();
 });
 
 // ── 스크롤 애니메이션 ──
-const observer = new IntersectionObserver((entries) => {
+const obs = new IntersectionObserver(entries => {
   entries.forEach(e => { if (e.isIntersecting) e.target.classList.add('visible'); });
-}, { threshold: 0.1 });
-document.querySelectorAll('section').forEach(s => observer.observe(s));
+}, { threshold: 0.08 });
+document.querySelectorAll('section').forEach(s => obs.observe(s));
 </script>
 </body>
 </html>

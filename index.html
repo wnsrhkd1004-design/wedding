@@ -5,92 +5,49 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
 <title>청첩장</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=Noto+Serif+KR:wght@300;400;600&family=IM+Fell+English:ital@0;1&family=Libre+Baskerville:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Noto+Serif+KR:wght@300;400;600&family=Playfair+Display:ital,wght@0,400;0,500;1,400;1,500&family=Lato:wght@300;400&display=swap" rel="stylesheet">
 
 <style>
-/* =============================================
-   ✏️ 색상/텍스처 변수 (수정 불필요)
-============================================= */
 :root {
-  --paper: #f5ead8;
-  --paper-dark: #e8d5b0;
-  --ink: #2c1f0e;
-  --ink-mid: #5c4a30;
-  --ink-light: #9c8060;
-  --ink-faint: #c8b090;
-  --sepia: #8b6914;
-  --sepia-light: #c4a040;
-  --red-wax: #8b2020;
-  --line: #d4b87a;
+  --bg:        #fdf6f0;
+  --petal-1:   #f2c4ce; /* 연분홍 */
+  --petal-2:   #e8a4b8; /* 장미핑크 */
+  --petal-3:   #d4789a; /* 딥로즈 */
+  --petal-4:   #f7e6d3; /* 피치 */
+  --green:     #7a9e7e; /* 잎사귀 */
+  --green-dk:  #4a6e4e;
+  --ink:       #2d1f26;
+  --ink-mid:   #6b4f5a;
+  --ink-light: #b08898;
+  --line:      #f0d5de;
+  --gold:      #c9956a;
 }
 
-* { margin: 0; padding: 0; box-sizing: border-box; }
+* { margin:0; padding:0; box-sizing:border-box; }
 html { scroll-behavior: smooth; }
 
 body {
-  background: #2a1f12;
-  font-family: 'Noto Serif KR', 'Libre Baskerville', serif;
+  background: #e8d5d0;
+  font-family: 'Noto Serif KR', serif;
   color: var(--ink);
   max-width: 480px;
   margin: 0 auto;
   overflow-x: hidden;
-  /* 배경 패턴: 낡은 나무 같은 질감 */
-  background-image: repeating-linear-gradient(
-    90deg,
-    transparent,
-    transparent 2px,
-    rgba(255,255,255,0.02) 2px,
-    rgba(255,255,255,0.02) 4px
-  );
 }
 
-/* 종이 질감 noise overlay */
-body::before {
-  content: '';
-  position: fixed;
-  inset: 0;
-  pointer-events: none;
-  z-index: 9999;
-  opacity: 0.04;
-  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)'/%3E%3C/svg%3E");
-  background-size: 128px;
-}
+.page { background: var(--bg); position: relative; }
 
-/* ── 페이지 래퍼 (종이) ── */
-.page {
-  background: var(--paper);
-  position: relative;
-  /* 종이 가장자리 그림자 */
-  box-shadow: -4px 0 20px rgba(0,0,0,0.4), 4px 0 20px rgba(0,0,0,0.4);
-}
-
-/* 종이 가장자리 번짐 효과 */
-.page::after {
-  content: '';
-  position: fixed;
-  inset: 0;
-  pointer-events: none;
-  z-index: 100;
-  background: radial-gradient(ellipse at center, transparent 60%, rgba(42,31,18,0.25) 100%);
-  max-width: 480px;
-  left: 50%;
-  transform: translateX(-50%);
-}
-
-/* ── 장식 테두리 SVG ── */
-.ornament-border {
+/* ── SVG 꽃 장식 공통 ── */
+.floral-top, .floral-bottom {
   width: 100%;
-  text-align: center;
-  padding: 0 20px;
   overflow: hidden;
-}
-.ornament-border svg {
-  width: 100%;
-  max-width: 380px;
-  opacity: 0.6;
+  line-height: 0;
+  display: block;
 }
 
-/* ── 커버 ── */
+/* ================================================
+   COVER
+================================================ */
 .cover {
   position: relative;
   min-height: 100svh;
@@ -98,553 +55,338 @@ body::before {
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  padding: 48px 32px;
   text-align: center;
+  padding: 60px 32px 80px;
   overflow: hidden;
-  background: var(--paper);
+  background: linear-gradient(175deg, #fce8ef 0%, #fdf6f0 60%, #f9ede3 100%);
 }
 
-/* 커버 배경 사진 */
+/* 배경 커버 사진 */
 .cover-img {
-  position: absolute;
-  inset: 0;
-  width: 100%;
-  height: 100%;
+  position: absolute; inset: 0;
+  width: 100%; height: 100%;
   object-fit: cover;
-  filter: sepia(60%) brightness(0.6) contrast(1.1);
-  mix-blend-mode: multiply;
+  filter: brightness(0.55) saturate(0.8);
+}
+.cover-photo-overlay {
+  position: absolute; inset: 0;
+  background: linear-gradient(to bottom, rgba(253,230,240,0.5) 0%, rgba(253,246,240,0.7) 100%);
 }
 .cover-placeholder {
-  position: absolute;
-  inset: 0;
-  background: linear-gradient(160deg, #c8a86a 0%, #7a5820 50%, #3a2810 100%);
-  opacity: 0.35;
+  position: absolute; inset: 0;
+  background: linear-gradient(160deg, #fce8ef 0%, #f7d6e0 50%, #f9ede3 100%);
 }
 
-/* 커버 장식 프레임 */
-.cover-frame {
+/* 코너 꽃장식 */
+.corner-flower {
+  position: absolute;
+  width: 160px;
+  height: 160px;
+  pointer-events: none;
+  z-index: 1;
+}
+.corner-flower.tl { top: 0; left: 0; }
+.corner-flower.tr { top: 0; right: 0; transform: scaleX(-1); }
+.corner-flower.bl { bottom: 0; left: 0; transform: scaleY(-1); }
+.corner-flower.br { bottom: 0; right: 0; transform: scale(-1); }
+
+/* 커버 콘텐츠 */
+.cover-content {
   position: relative;
   z-index: 2;
-  width: 100%;
-  max-width: 360px;
-  border: 1px solid var(--sepia);
-  padding: 36px 28px;
-  /* 이중 테두리 */
-  box-shadow: inset 0 0 0 4px var(--paper), inset 0 0 0 6px var(--sepia-light);
-  background: rgba(245, 234, 216, 0.88);
 }
-
 .cover-pre {
-  font-family: 'IM Fell English', serif;
+  font-family: 'Playfair Display', serif;
   font-style: italic;
-  font-size: 11px;
+  font-size: 12px;
   letter-spacing: 5px;
-  color: var(--ink-light);
+  color: var(--petal-3);
   margin-bottom: 20px;
   text-transform: uppercase;
 }
-
-.cover-flourish {
-  font-size: 28px;
-  color: var(--sepia);
-  margin: 10px 0;
-  line-height: 1;
-}
-
 .cover-names {
-  font-family: 'IM Fell English', serif;
-  font-size: 38px;
-  line-height: 1.3;
+  font-family: 'Playfair Display', serif;
+  font-size: 44px;
+  font-weight: 400;
+  line-height: 1.25;
   color: var(--ink);
-  margin: 8px 0 16px;
-  letter-spacing: 1px;
+  margin-bottom: 6px;
 }
-
 .cover-amp {
-  font-family: 'IM Fell English', serif;
-  font-style: italic;
-  font-size: 28px;
-  color: var(--sepia);
   display: block;
-  margin: 4px 0;
+  font-style: italic;
+  font-size: 32px;
+  color: var(--petal-3);
+  margin: 2px 0;
 }
-
 .cover-divider {
-  display: flex;
-  align-items: center;
-  gap: 12px;
-  margin: 16px 0;
-  color: var(--sepia-light);
+  display: flex; align-items: center; gap: 12px;
+  margin: 20px auto; max-width: 220px;
 }
 .cover-divider::before, .cover-divider::after {
-  content: '';
-  flex: 1;
-  height: 1px;
-  background: linear-gradient(to right, transparent, var(--line), transparent);
+  content: ''; flex: 1; height: 1px;
+  background: linear-gradient(to right, transparent, var(--petal-2), transparent);
 }
-.cover-divider span { font-size: 14px; }
-
+.cover-divider span { color: var(--petal-2); font-size: 16px; }
 .cover-date {
-  font-family: 'Libre Baskerville', serif;
-  font-size: 12px;
-  letter-spacing: 2.5px;
+  font-family: 'Lato', sans-serif;
+  font-weight: 300;
+  font-size: 13px;
+  letter-spacing: 3px;
   color: var(--ink-mid);
   line-height: 2;
 }
 
-.wax-seal {
+/* 꽃잎 떨어지는 애니메이션 */
+.petal {
   position: absolute;
-  bottom: -18px;
-  left: 50%;
-  transform: translateX(-50%);
-  width: 44px;
-  height: 44px;
-  background: var(--red-wax);
-  border-radius: 50%;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 18px;
-  box-shadow: 0 2px 8px rgba(0,0,0,0.3), inset 0 1px 2px rgba(255,255,255,0.2);
-  color: rgba(255,255,255,0.7);
-  z-index: 3;
+  pointer-events: none;
+  z-index: 1;
+  animation: petalFall linear infinite;
+  opacity: 0;
+}
+@keyframes petalFall {
+  0%   { opacity: 0; transform: translateY(-20px) rotate(0deg); }
+  10%  { opacity: 0.7; }
+  90%  { opacity: 0.4; }
+  100% { opacity: 0; transform: translateY(110svh) rotate(360deg); }
 }
 
 .scroll-hint {
-  position: absolute;
-  bottom: 28px;
-  z-index: 3;
-  text-align: center;
+  position: absolute; bottom: 28px; left: 50%; transform: translateX(-50%);
+  z-index: 3; text-align: center;
 }
 .scroll-hint p {
-  font-family: 'IM Fell English', serif;
-  font-style: italic;
-  font-size: 11px;
-  letter-spacing: 2px;
-  color: var(--ink-light);
-  margin-bottom: 8px;
+  font-family: 'Playfair Display', serif; font-style: italic;
+  font-size: 11px; letter-spacing: 3px; color: var(--ink-light); margin-bottom: 8px;
 }
-.scroll-hint .arrow {
-  display: block;
-  animation: fadeDown 2s infinite;
-  color: var(--sepia-light);
-  font-size: 16px;
+.scroll-hint .line {
+  display: block; width: 1px; height: 36px;
+  background: linear-gradient(to bottom, var(--petal-2), transparent);
+  margin: 0 auto; animation: lineGrow 2s ease-in-out infinite;
 }
-@keyframes fadeDown {
-  0%, 100% { opacity: 0.3; transform: translateY(0); }
-  50% { opacity: 1; transform: translateY(5px); }
+@keyframes lineGrow {
+  0%, 100% { transform: scaleY(0.5); opacity: 0.4; }
+  50% { transform: scaleY(1); opacity: 1; }
 }
 
 /* ── 공통 섹션 ── */
 section {
-  padding: 56px 32px;
+  padding: 60px 32px;
   position: relative;
-  opacity: 0;
-  transform: translateY(20px);
+  opacity: 0; transform: translateY(24px);
   transition: opacity 0.8s ease, transform 0.8s ease;
 }
 section.visible { opacity: 1; transform: translateY(0); }
 
-/* 섹션 구분선 — 장식적 */
-.section-sep {
-  text-align: center;
-  margin: 0 32px;
-  height: 24px;
-  position: relative;
+.section-head {
+  text-align: center; margin-bottom: 36px;
 }
-.section-sep::before {
-  content: '';
-  position: absolute;
-  left: 0; right: 0; top: 50%;
-  height: 1px;
-  background: linear-gradient(to right, transparent, var(--line), transparent);
+.section-head .en {
+  font-family: 'Playfair Display', serif; font-style: italic;
+  font-size: 11px; letter-spacing: 5px; color: var(--petal-2);
+  text-transform: uppercase; display: block; margin-bottom: 6px;
 }
-.section-sep span {
-  position: relative;
-  background: var(--paper);
-  padding: 0 12px;
-  color: var(--sepia-light);
-  font-size: 16px;
+.section-head .ko {
+  font-size: 16px; letter-spacing: 3px; color: var(--ink-mid);
 }
 
-.section-title {
-  text-align: center;
-  margin-bottom: 32px;
-}
-.section-title .en {
-  font-family: 'IM Fell English', serif;
-  font-style: italic;
-  font-size: 11px;
-  letter-spacing: 5px;
-  color: var(--ink-faint);
-  text-transform: uppercase;
-  display: block;
-  margin-bottom: 6px;
-}
-.section-title .ko {
-  font-size: 17px;
-  font-weight: 400;
-  color: var(--ink-mid);
-  letter-spacing: 2px;
+/* 섹션 구분 꽃 */
+.floral-sep {
+  text-align: center; padding: 8px 0;
+  color: var(--petal-2); font-size: 22px; letter-spacing: 6px;
+  opacity: 0.7;
 }
 
 /* ── 인사말 ── */
-.greeting {
-  text-align: center;
-  background: var(--paper);
-  position: relative;
-}
-.greeting::before {
-  content: '"';
-  position: absolute;
-  top: 32px;
-  left: 28px;
-  font-family: 'IM Fell English', serif;
-  font-size: 80px;
-  color: var(--paper-dark);
-  line-height: 1;
-  pointer-events: none;
-}
+.greeting { text-align: center; }
 .greeting p {
-  font-size: 14px;
-  line-height: 2.4;
-  color: var(--ink-mid);
-  word-break: keep-all;
-  position: relative;
-  z-index: 1;
+  font-size: 14.5px; line-height: 2.5;
+  color: var(--ink-mid); word-break: keep-all;
 }
 
 /* ── 혼주 ── */
-.parents-box {
+.parents-wrap {
   border: 1px solid var(--line);
-  padding: 28px 24px;
+  padding: 28px 20px;
   text-align: center;
   position: relative;
-  background: rgba(200,168,100,0.05);
+  background: linear-gradient(135deg, rgba(242,196,206,0.08), rgba(247,230,211,0.12));
 }
-/* 코너 장식 */
-.parents-box::before, .parents-box::after {
-  content: '❧';
-  position: absolute;
-  font-size: 20px;
-  color: var(--sepia-light);
-  opacity: 0.5;
+/* 코너 장미 */
+.parents-wrap::before, .parents-wrap::after {
+  font-size: 20px; position: absolute; color: var(--petal-2); opacity: 0.5;
 }
-.parents-box::before { top: 8px; left: 12px; }
-.parents-box::after { bottom: 8px; right: 12px; transform: rotate(180deg); }
+.parents-wrap::before { content: '🌸'; top: 10px; left: 12px; }
+.parents-wrap::after  { content: '🌸'; bottom: 10px; right: 12px; }
 
-.parents-row {
-  display: grid;
-  grid-template-columns: 1fr auto 1fr;
-  gap: 16px;
-  align-items: center;
-  margin-bottom: 8px;
-  font-size: 13px;
-  line-height: 2;
-  color: var(--ink-mid);
+.parents-grid {
+  display: grid; grid-template-columns: 1fr auto 1fr;
+  gap: 12px; align-items: center;
 }
-.parents-row .divider-vert {
-  width: 1px;
-  height: 48px;
-  background: var(--line);
+.parents-grid .vline {
+  width: 1px; height: 56px;
+  background: linear-gradient(to bottom, transparent, var(--line), transparent);
   margin: 0 auto;
 }
-.parents-row .role {
-  display: block;
-  font-size: 10px;
-  letter-spacing: 2px;
-  color: var(--ink-faint);
-  margin-bottom: 2px;
-  font-family: 'IM Fell English', serif;
-  font-style: italic;
+.p-role {
+  display: block; font-size: 10px; letter-spacing: 2px;
+  color: var(--ink-light); margin-bottom: 4px;
+  font-family: 'Playfair Display', serif; font-style: italic;
 }
-.couple-name {
-  margin-top: 20px;
-  font-family: 'IM Fell English', serif;
-  font-size: 20px;
-  color: var(--ink);
-  letter-spacing: 2px;
+.p-names { font-size: 13px; color: var(--ink-mid); line-height: 2.2; }
+.couple-line {
+  margin-top: 20px; font-family: 'Playfair Display', serif;
+  font-size: 20px; color: var(--ink);
 }
-.couple-name .amp {
-  font-style: italic;
-  color: var(--sepia);
-  margin: 0 10px;
-}
+.couple-line em { font-style: italic; color: var(--petal-3); margin: 0 10px; }
 
-/* ── D-day ── */
+/* ── D-Day ── */
 .dday-section {
+  background: linear-gradient(160deg, #f9e8ef 0%, #fce4f0 50%, #f5e8f5 100%);
   text-align: center;
-  background: var(--ink);
-  padding: 56px 32px;
-  position: relative;
-  overflow: hidden;
+  padding: 64px 32px;
+  position: relative; overflow: hidden;
 }
 .dday-section::before {
-  content: '';
-  position: absolute;
-  inset: 12px;
-  border: 1px solid rgba(196,160,64,0.3);
+  content: ''; position: absolute; inset: 0;
+  background: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Ccircle cx='30' cy='30' r='1.5' fill='%23f2c4ce' opacity='0.4'/%3E%3C/svg%3E") repeat;
   pointer-events: none;
 }
-.dday-section .section-title .en { color: var(--sepia-light); opacity: 0.6; }
-.dday-section .section-title .ko { color: rgba(245,234,216,0.5); }
-
-.dday-inner {
-  position: relative;
+.dday-num {
+  font-family: 'Playfair Display', serif;
+  font-size: 100px; font-weight: 400; line-height: 0.9;
+  color: var(--petal-3); position: relative;
+  margin: 12px 0 6px;
 }
-.dday-big {
-  font-family: 'IM Fell English', serif;
-  font-size: 96px;
-  font-weight: 400;
-  line-height: 0.9;
-  color: var(--sepia-light);
-  letter-spacing: -2px;
-  margin: 16px 0 8px;
-}
-.dday-big small {
-  font-size: 36px;
-  vertical-align: middle;
-}
+.dday-num small { font-size: 40px; vertical-align: middle; font-style: italic; }
 .dday-sub {
-  font-family: 'IM Fell English', serif;
-  font-style: italic;
-  font-size: 13px;
-  letter-spacing: 3px;
-  color: rgba(245,234,216,0.4);
-  margin-bottom: 12px;
+  font-family: 'Playfair Display', serif; font-style: italic;
+  font-size: 13px; letter-spacing: 3px; color: var(--ink-light);
+  margin-bottom: 14px;
 }
-.dday-date {
-  font-size: 13px;
-  color: rgba(245,234,216,0.55);
-  line-height: 2;
-  letter-spacing: 1px;
-}
+.dday-date-text { font-size: 13px; color: var(--ink-mid); line-height: 2; letter-spacing: 1px; }
 
 /* ── 갤러리 ── */
-.gallery-section { padding-bottom: 40px; }
 .gallery-grid {
-  display: grid;
-  grid-template-columns: repeat(2, 1fr);
-  gap: 6px;
-  margin-top: 8px;
+  display: grid; grid-template-columns: repeat(2, 1fr);
+  gap: 6px; margin-top: 8px;
 }
 .gallery-grid .full { grid-column: 1 / -1; }
 .gallery-item {
-  aspect-ratio: 1;
-  overflow: hidden;
-  background: var(--paper-dark);
-  position: relative;
-  cursor: pointer;
+  aspect-ratio: 1; overflow: hidden;
+  background: var(--line); position: relative; cursor: pointer;
 }
 .gallery-item.tall { aspect-ratio: 2/3; }
 .gallery-item img {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-  filter: sepia(30%) contrast(1.05) brightness(0.95);
-  transition: filter 0.4s, transform 0.4s;
-  position: relative;
-  z-index: 1;
+  width: 100%; height: 100%; object-fit: cover;
+  transition: transform 0.4s; position: relative; z-index: 1;
 }
-.gallery-item:active img {
-  filter: sepia(60%) contrast(1.1) brightness(0.85);
-  transform: scale(1.03);
-}
-/* placeholder */
+.gallery-item:active img { transform: scale(1.04); }
 .gallery-item::after {
   content: attr(data-label);
-  position: absolute;
-  inset: 0;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  color: var(--ink-light);
-  font-size: 11px;
-  letter-spacing: 2px;
-  font-family: 'IM Fell English', serif;
-  font-style: italic;
+  position: absolute; inset: 0;
+  display: flex; align-items: center; justify-content: center;
+  color: var(--ink-light); font-size: 11px; letter-spacing: 2px;
+  font-family: 'Playfair Display', serif; font-style: italic;
 }
 .gallery-item img { position: relative; z-index: 1; }
 
 /* Lightbox */
 .lightbox {
-  position: fixed;
-  inset: 0;
-  background: rgba(20,12,4,0.96);
-  z-index: 1000;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  opacity: 0;
-  pointer-events: none;
-  transition: opacity 0.3s;
+  position: fixed; inset: 0;
+  background: rgba(45,31,38,0.95); z-index: 1000;
+  display: flex; align-items: center; justify-content: center;
+  opacity: 0; pointer-events: none; transition: opacity 0.3s;
 }
 .lightbox.open { opacity: 1; pointer-events: all; }
-.lightbox img {
-  max-width: 95vw;
-  max-height: 90svh;
-  object-fit: contain;
-  filter: sepia(20%);
-  border: 2px solid rgba(196,160,64,0.3);
-}
+.lightbox img { max-width: 95vw; max-height: 90svh; object-fit: contain; }
 .lightbox-close {
-  position: absolute;
-  top: 20px; right: 20px;
-  background: none;
-  border: 1px solid rgba(196,160,64,0.4);
-  color: var(--sepia-light);
-  width: 36px; height: 36px;
-  border-radius: 50%;
-  font-size: 16px;
-  cursor: pointer;
+  position: absolute; top: 20px; right: 20px;
+  background: none; border: 1px solid rgba(242,196,206,0.4);
+  color: var(--petal-1); width: 36px; height: 36px;
+  border-radius: 50%; font-size: 16px; cursor: pointer;
   display: flex; align-items: center; justify-content: center;
-  font-family: 'IM Fell English', serif;
 }
 
 /* ── 위치 ── */
+.map-wrap { margin: 16px 0; }
 .map-box {
-  width: 100%;
-  height: 220px;
-  background: var(--paper-dark);
-  margin: 16px 0;
-  overflow: hidden;
-  border: 1px solid var(--line);
+  width: 100%; height: 230px;
+  border: 1px solid var(--line); overflow: hidden;
   position: relative;
-  /* 세피아 오버레이 */
-  filter: sepia(20%);
 }
 .map-box iframe { width: 100%; height: 100%; border: none; }
-
-.location-name {
-  font-family: 'IM Fell English', serif;
-  font-size: 22px;
-  color: var(--ink);
-  margin-bottom: 6px;
-  letter-spacing: 1px;
+.loc-name {
+  font-family: 'Playfair Display', serif; font-size: 22px;
+  color: var(--ink); margin-bottom: 6px;
 }
-.location-address {
-  font-size: 12px;
-  color: var(--ink-light);
-  line-height: 2;
-  letter-spacing: 0.5px;
-}
+.loc-addr { font-size: 12px; color: var(--ink-light); line-height: 2; }
 
-.btn-row { display: flex; gap: 8px; margin-top: 16px; }
+.btn-row { display: flex; gap: 8px; margin-top: 14px; }
 .btn {
-  flex: 1;
-  padding: 12px 0;
-  border: 1px solid var(--line);
-  background: transparent;
-  color: var(--ink-mid);
-  font-family: 'Noto Serif KR', serif;
-  font-size: 12px;
-  letter-spacing: 1px;
-  cursor: pointer;
-  transition: all 0.2s;
+  flex: 1; padding: 13px 0;
+  border: 1px solid var(--petal-2); background: none;
+  color: var(--petal-3); font-size: 12px; letter-spacing: 1px;
+  cursor: pointer; font-family: 'Noto Serif KR', serif;
+  transition: all 0.2s; border-radius: 2px;
 }
-.btn:active, .btn:hover {
-  background: var(--ink);
-  color: var(--paper);
-  border-color: var(--ink);
-}
-.btn.primary {
-  background: var(--ink);
-  color: var(--paper);
-  border-color: var(--ink);
-}
+.btn:active, .btn:hover { background: var(--petal-3); color: #fff; border-color: var(--petal-3); }
+.btn.primary { background: var(--petal-3); color: #fff; border-color: var(--petal-3); }
 
 /* ── 계좌번호 ── */
 .account-note {
-  font-size: 13px;
-  color: var(--ink-light);
-  text-align: center;
-  line-height: 2.2;
-  margin-bottom: 24px;
-  font-family: 'IM Fell English', serif;
-  font-style: italic;
+  font-family: 'Playfair Display', serif; font-style: italic;
+  font-size: 13px; color: var(--ink-light); text-align: center;
+  line-height: 2.2; margin-bottom: 24px;
 }
 .account-card {
-  border: 1px solid var(--line);
-  padding: 20px 20px;
-  margin-bottom: 10px;
+  border: 1px solid var(--line); padding: 20px;
+  margin-bottom: 10px; border-radius: 2px;
+  background: linear-gradient(135deg, rgba(242,196,206,0.06), transparent);
   position: relative;
-  background: rgba(200,168,100,0.04);
 }
-.account-card::before {
-  content: '';
-  position: absolute;
-  top: 4px; left: 4px; right: 4px; bottom: 4px;
-  border: 1px solid rgba(196,160,64,0.15);
-  pointer-events: none;
+.account-card::after {
+  content: '✿'; position: absolute;
+  top: 12px; right: 14px; font-size: 14px;
+  color: var(--petal-1); opacity: 0.6;
 }
 .account-role {
-  font-family: 'IM Fell English', serif;
-  font-style: italic;
-  font-size: 11px;
-  letter-spacing: 3px;
-  color: var(--sepia-light);
-  margin-bottom: 8px;
+  font-family: 'Playfair Display', serif; font-style: italic;
+  font-size: 11px; letter-spacing: 3px; color: var(--petal-2); margin-bottom: 8px;
 }
-.account-info {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-}
+.account-row { display: flex; justify-content: space-between; align-items: center; }
 .account-name { font-size: 16px; margin-bottom: 3px; }
-.account-number { font-size: 12px; color: var(--ink-light); letter-spacing: 0.5px; }
+.account-num { font-size: 12px; color: var(--ink-light); letter-spacing: 0.5px; }
 .copy-btn {
-  background: none;
-  border: 1px solid var(--line);
-  padding: 5px 14px;
-  font-size: 11px;
-  color: var(--ink-light);
-  cursor: pointer;
-  font-family: 'IM Fell English', serif;
-  font-style: italic;
-  letter-spacing: 1px;
+  background: none; border: 1px solid var(--line);
+  padding: 5px 14px; font-size: 11px; color: var(--ink-light);
+  cursor: pointer; border-radius: 2px; white-space: nowrap;
+  font-family: 'Playfair Display', serif; font-style: italic;
   transition: all 0.2s;
-  white-space: nowrap;
 }
-.copy-btn:active { background: var(--ink); color: var(--paper); border-color: var(--ink); }
+.copy-btn:active { background: var(--petal-3); color: #fff; border-color: var(--petal-3); }
 
 /* ── 푸터 ── */
 footer {
-  text-align: center;
-  padding: 48px 32px 80px;
-  background: var(--paper);
+  text-align: center; padding: 48px 32px 80px;
+  position: relative; overflow: hidden;
 }
-.footer-flourish {
-  font-family: 'IM Fell English', serif;
-  font-style: italic;
-  font-size: 14px;
-  color: var(--ink-light);
-  letter-spacing: 3px;
-  margin-bottom: 12px;
+.footer-text {
+  font-family: 'Playfair Display', serif; font-style: italic;
+  font-size: 15px; color: var(--ink-light); letter-spacing: 3px; margin-bottom: 12px;
 }
-.footer-ornament {
-  font-size: 22px;
-  color: var(--sepia-light);
-  opacity: 0.6;
-}
+.footer-flowers { font-size: 24px; letter-spacing: 8px; opacity: 0.6; }
 
 /* ── 토스트 ── */
 .toast {
-  position: fixed;
-  bottom: 32px;
-  left: 50%;
+  position: fixed; bottom: 32px; left: 50%;
   transform: translateX(-50%) translateY(20px);
-  background: var(--ink);
-  color: var(--paper);
-  padding: 10px 24px;
-  font-family: 'IM Fell English', serif;
-  font-style: italic;
-  font-size: 13px;
-  border: 1px solid var(--sepia);
-  opacity: 0;
-  transition: all 0.3s;
-  z-index: 9998;
-  white-space: nowrap;
-  letter-spacing: 1px;
+  background: var(--ink); color: var(--petal-1);
+  padding: 10px 24px; border-radius: 24px;
+  font-size: 13px; opacity: 0; transition: all 0.3s;
+  z-index: 9998; white-space: nowrap;
+  font-family: 'Playfair Display', serif; font-style: italic;
 }
 .toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
 </style>
@@ -654,19 +396,66 @@ footer {
 
 <!-- ── 커버 ── -->
 <div class="cover">
-  <!-- ✏️ <img class="cover-img" src="images/main.jpg" alt=""> 로 교체 -->
+  <!-- ✏️ 사진: <img class="cover-img" src="images/main.jpg" alt=""> 추가 -->
   <div class="cover-placeholder"></div>
+  <div class="cover-photo-overlay"></div>
 
-  <div class="cover-frame">
+  <!-- 코너 꽃 SVG -->
+  <svg class="corner-flower tl" viewBox="0 0 160 160" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <ellipse cx="30" cy="20" rx="14" ry="22" fill="#f2c4ce" opacity="0.7" transform="rotate(-20 30 20)"/>
+    <ellipse cx="14" cy="40" rx="12" ry="20" fill="#e8a4b8" opacity="0.6" transform="rotate(-50 14 40)"/>
+    <ellipse cx="50" cy="12" rx="10" ry="18" fill="#f7e6d3" opacity="0.65" transform="rotate(10 50 12)"/>
+    <ellipse cx="65" cy="25" rx="9" ry="16" fill="#f2c4ce" opacity="0.5" transform="rotate(35 65 25)"/>
+    <circle cx="32" cy="32" r="8" fill="#d4789a" opacity="0.5"/>
+    <!-- 잎사귀 -->
+    <ellipse cx="60" cy="55" rx="7" ry="18" fill="#7a9e7e" opacity="0.5" transform="rotate(40 60 55)"/>
+    <ellipse cx="45" cy="68" rx="6" ry="16" fill="#4a6e4e" opacity="0.4" transform="rotate(60 45 68)"/>
+    <!-- 작은 꽃봉오리 -->
+    <ellipse cx="85" cy="38" rx="7" ry="12" fill="#f2c4ce" opacity="0.5" transform="rotate(20 85 38)"/>
+    <ellipse cx="78" cy="28" rx="6" ry="10" fill="#e8a4b8" opacity="0.45" transform="rotate(-10 78 28)"/>
+    <circle cx="84" cy="36" r="4" fill="#d4789a" opacity="0.4"/>
+    <!-- 잔가지 -->
+    <path d="M10 80 Q30 60 55 45" stroke="#7a9e7e" stroke-width="1.5" fill="none" opacity="0.5"/>
+    <path d="M10 80 Q25 75 40 60" stroke="#4a6e4e" stroke-width="1" fill="none" opacity="0.4"/>
+  </svg>
+  <svg class="corner-flower tr" viewBox="0 0 160 160" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <ellipse cx="30" cy="20" rx="14" ry="22" fill="#f2c4ce" opacity="0.7" transform="rotate(-20 30 20)"/>
+    <ellipse cx="14" cy="40" rx="12" ry="20" fill="#e8a4b8" opacity="0.6" transform="rotate(-50 14 40)"/>
+    <ellipse cx="50" cy="12" rx="10" ry="18" fill="#f7e6d3" opacity="0.65" transform="rotate(10 50 12)"/>
+    <ellipse cx="65" cy="25" rx="9" ry="16" fill="#f2c4ce" opacity="0.5" transform="rotate(35 65 25)"/>
+    <circle cx="32" cy="32" r="8" fill="#d4789a" opacity="0.5"/>
+    <ellipse cx="60" cy="55" rx="7" ry="18" fill="#7a9e7e" opacity="0.5" transform="rotate(40 60 55)"/>
+    <ellipse cx="45" cy="68" rx="6" ry="16" fill="#4a6e4e" opacity="0.4" transform="rotate(60 45 68)"/>
+    <ellipse cx="85" cy="38" rx="7" ry="12" fill="#f2c4ce" opacity="0.5" transform="rotate(20 85 38)"/>
+    <ellipse cx="78" cy="28" rx="6" ry="10" fill="#e8a4b8" opacity="0.45" transform="rotate(-10 78 28)"/>
+    <circle cx="84" cy="36" r="4" fill="#d4789a" opacity="0.4"/>
+    <path d="M10 80 Q30 60 55 45" stroke="#7a9e7e" stroke-width="1.5" fill="none" opacity="0.5"/>
+  </svg>
+  <svg class="corner-flower bl" viewBox="0 0 160 160" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <ellipse cx="30" cy="20" rx="14" ry="22" fill="#f2c4ce" opacity="0.7" transform="rotate(-20 30 20)"/>
+    <ellipse cx="14" cy="40" rx="12" ry="20" fill="#e8a4b8" opacity="0.6" transform="rotate(-50 14 40)"/>
+    <ellipse cx="50" cy="12" rx="10" ry="18" fill="#f7e6d3" opacity="0.65" transform="rotate(10 50 12)"/>
+    <circle cx="32" cy="32" r="8" fill="#d4789a" opacity="0.5"/>
+    <ellipse cx="60" cy="55" rx="7" ry="18" fill="#7a9e7e" opacity="0.5" transform="rotate(40 60 55)"/>
+    <path d="M10 80 Q30 60 55 45" stroke="#7a9e7e" stroke-width="1.5" fill="none" opacity="0.5"/>
+  </svg>
+  <svg class="corner-flower br" viewBox="0 0 160 160" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <ellipse cx="30" cy="20" rx="14" ry="22" fill="#f2c4ce" opacity="0.7" transform="rotate(-20 30 20)"/>
+    <ellipse cx="14" cy="40" rx="12" ry="20" fill="#e8a4b8" opacity="0.6" transform="rotate(-50 14 40)"/>
+    <ellipse cx="50" cy="12" rx="10" ry="18" fill="#f7e6d3" opacity="0.65" transform="rotate(10 50 12)"/>
+    <circle cx="32" cy="32" r="8" fill="#d4789a" opacity="0.5"/>
+    <ellipse cx="60" cy="55" rx="7" ry="18" fill="#7a9e7e" opacity="0.5" transform="rotate(40 60 55)"/>
+    <path d="M10 80 Q30 60 55 45" stroke="#7a9e7e" stroke-width="1.5" fill="none" opacity="0.5"/>
+  </svg>
+
+  <!-- 떨어지는 꽃잎들 (JS로 생성) -->
+  <div id="petals"></div>
+
+  <div class="cover-content">
     <div class="cover-pre">Wedding Invitation</div>
 
-    <!-- 상단 장식 -->
-    <svg width="160" height="16" viewBox="0 0 160 16" fill="none" style="margin:0 auto 16px;display:block;opacity:0.5">
-      <line x1="0" y1="8" x2="60" y2="8" stroke="#8b6914" stroke-width="0.5"/>
-      <path d="M72 8 Q80 2 88 8 Q80 14 72 8Z" fill="#8b6914" opacity="0.7"/>
-      <circle cx="80" cy="8" r="2" fill="#8b6914"/>
-      <line x1="100" y1="8" x2="160" y2="8" stroke="#8b6914" stroke-width="0.5"/>
-    </svg>
+    <!-- 작은 꽃 장식 -->
+    <div style="font-size:18px;color:var(--petal-2);letter-spacing:6px;margin-bottom:12px;opacity:0.7">✿ ✾ ✿</div>
 
     <div class="cover-names">
       <span id="coverGroom"></span>
@@ -674,31 +463,20 @@ footer {
       <span id="coverBride"></span>
     </div>
 
-    <div class="cover-divider"><span>✦</span></div>
-
+    <div class="cover-divider"><span>❀</span></div>
     <div class="cover-date" id="coverDate"></div>
-
-    <!-- 하단 장식 -->
-    <svg width="120" height="12" viewBox="0 0 120 12" fill="none" style="margin:16px auto 0;display:block;opacity:0.4">
-      <line x1="0" y1="6" x2="40" y2="6" stroke="#8b6914" stroke-width="0.5"/>
-      <circle cx="60" cy="6" r="3" stroke="#8b6914" stroke-width="0.5"/>
-      <circle cx="60" cy="6" r="1.5" fill="#8b6914"/>
-      <line x1="80" y1="6" x2="120" y2="6" stroke="#8b6914" stroke-width="0.5"/>
-    </svg>
-
-    <div class="wax-seal">♡</div>
   </div>
 
   <div class="scroll-hint">
     <p>scroll</p>
-    <span class="arrow">↓</span>
+    <span class="line"></span>
   </div>
 </div>
 
 <!-- ── 인사말 ── -->
-<div class="section-sep"><span>❦</span></div>
+<div class="floral-sep">✿ ❀ ✿</div>
 <section class="greeting" id="sec1">
-  <div class="section-title">
+  <div class="section-head">
     <span class="en">Greeting</span>
     <span class="ko">인 사 말</span>
   </div>
@@ -706,39 +484,35 @@ footer {
 </section>
 
 <!-- ── 혼주 ── -->
-<div class="section-sep"><span>❦</span></div>
-<section id="sec2" style="padding:48px 32px;">
-  <div class="section-title">
+<div class="floral-sep">✿ ❀ ✿</div>
+<section id="sec2">
+  <div class="section-head">
     <span class="en">Family</span>
     <span class="ko">혼 주</span>
   </div>
-  <div class="parents-box" id="parentsBox"></div>
+  <div class="parents-wrap" id="parentsBox"></div>
 </section>
 
-<!-- ── D-day ── -->
+<!-- ── D-Day ── -->
 <section class="dday-section" id="sec3">
-  <div class="section-title">
-    <span class="en">Until the Day</span>
-    <span class="ko"></span>
+  <div class="section-head">
+    <span class="en">Counting Down</span>
+    <span class="ko" style="color:var(--petal-3)"></span>
   </div>
-  <div class="dday-inner">
-    <div class="dday-big"><small>D—</small><span id="ddayNum">?</span></div>
-    <div class="dday-sub">days remaining</div>
-    <div class="dday-date" id="ddayDate"></div>
-  </div>
+  <div class="dday-num"><small>D—</small><span id="ddayNum">?</span></div>
+  <div class="dday-sub">days until we say "I do"</div>
+  <div class="dday-date-text" id="ddayDate"></div>
 </section>
 
 <!-- ── 갤러리 ── -->
-<div class="section-sep"><span>❦</span></div>
-<section class="gallery-section" id="sec4">
-  <div class="section-title">
+<div class="floral-sep">✿ ❀ ✿</div>
+<section id="sec4">
+  <div class="section-head">
     <span class="en">Gallery</span>
     <span class="ko">사 진</span>
   </div>
   <!--
-    ✏️ 사진 추가:
-    images/ 폴더에 업로드 후 아래 <img> 주석 해제
-    full 클래스 = 가로 전체, tall = 세로 길게
+    ✏️ images/ 폴더에 사진 업로드 후 아래 주석 해제
   -->
   <div class="gallery-grid">
     <div class="gallery-item full" data-label="photo I">
@@ -763,15 +537,17 @@ footer {
 </section>
 
 <!-- ── 위치 ── -->
-<div class="section-sep"><span>❦</span></div>
+<div class="floral-sep">✿ ❀ ✿</div>
 <section id="sec5">
-  <div class="section-title">
+  <div class="section-head">
     <span class="en">Location</span>
     <span class="ko">오 시 는 길</span>
   </div>
-  <div class="location-name" id="locName"></div>
-  <div class="location-address" id="locAddr"></div>
-  <div class="map-box" id="mapBox"></div>
+  <div class="loc-name" id="locName"></div>
+  <div class="loc-addr" id="locAddr"></div>
+  <div class="map-wrap">
+    <div class="map-box" id="mapBox"></div>
+  </div>
   <div class="btn-row">
     <button class="btn" onclick="openKakao()">카카오맵</button>
     <button class="btn" onclick="openNaver()">네이버맵</button>
@@ -780,24 +556,25 @@ footer {
 </section>
 
 <!-- ── 계좌번호 ── -->
-<div class="section-sep"><span>❦</span></div>
+<div class="floral-sep">✿ ❀ ✿</div>
 <section id="sec6">
-  <div class="section-title">
+  <div class="section-head">
     <span class="en">Account</span>
-    <span class="ko">마음 전하기</span>
+    <span class="ko">마 음 전 하 기</span>
   </div>
   <p class="account-note">
-    함께해 주시는 것만으로도 충분하지만,<br>
-    축하의 마음을 전하고 싶으신 분들께
+    함께해 주시는 것만으로도<br>
+    더없이 행복하겠습니다
   </p>
   <div id="accountBox"></div>
 </section>
 
 <!-- ── 푸터 ── -->
-<div class="section-sep"><span>❦</span></div>
+<div class="floral-sep">✿ ❀ ✿</div>
 <footer>
-  <div class="footer-flourish">with all our love</div>
-  <div class="footer-ornament">❦</div>
+  <div class="footer-flowers">🌸 🌷 🌸</div>
+  <br>
+  <div class="footer-text">with love & flowers</div>
 </footer>
 
 </div><!-- .page -->
@@ -811,8 +588,6 @@ footer {
 <!-- Toast -->
 <div class="toast" id="toast"></div>
 
-
-
 <script>
 // ================================================
 // ✏️ 개인정보 수정하세요
@@ -825,28 +600,23 @@ const INFO = {
   brideFather: "김철수",
   brideMother: "이영자",
 
-  // ✏️ 날짜: new Date(년, 월-1, 일, 시, 분)
+  // ✏️ new Date(년, 월-1, 일, 시, 분)
   weddingDate:     new Date(2025, 5, 14, 14, 0),
   weddingDateText: "2025년 6월 14일 토요일 오후 2시",
 
   place:   "그랜드 볼룸 웨딩홀",
   address: "서울특별시 강남구 테헤란로 123",
 
-  // ✏️ 좌표 (구글맵 검색용 — 없어도 address로 검색됨)
-  lat: 37.5012,
-  lng: 127.0396,
-
   groomAccount: "카카오뱅크 3333-12-3456789",
   brideAccount:  "신한은행 110-123-456789",
 
-  // ✏️ 인사말 수정
   greeting: `저희 두 사람이\n사랑으로 하나가 되는 날,\n함께 자리하여 축복해 주시면\n더없이 기쁘겠습니다.\n\n소중한 걸음으로 찾아주실\n여러분을 기다립니다.`,
 };
 
 // ── 렌더링 ──
 document.getElementById('coverGroom').textContent  = INFO.groomName;
 document.getElementById('coverBride').textContent  = INFO.brideName;
-document.getElementById('coverDate').innerHTML     = INFO.weddingDateText.replace(' ', '<br>');
+document.getElementById('coverDate').innerHTML     = INFO.weddingDateText.replace(/\s(?=\d{2}시)/, '<br>');
 document.getElementById('greetingText').innerHTML  = INFO.greeting.replace(/\n/g, '<br>');
 document.getElementById('locName').textContent     = INFO.place;
 document.getElementById('locAddr').textContent     = INFO.address;
@@ -854,40 +624,40 @@ document.getElementById('ddayDate').textContent    = INFO.weddingDateText;
 
 // 혼주
 document.getElementById('parentsBox').innerHTML = `
-  <div class="parents-row">
+  <div class="parents-grid">
     <div style="text-align:right">
-      <span class="role">Groom's Father</span>${INFO.groomFather}<br>
-      <span class="role">Groom's Mother</span>${INFO.groomMother}
+      <span class="p-role">신랑측 부</span>
+      <div class="p-names">${INFO.groomFather}<br>${INFO.groomMother}</div>
     </div>
-    <div class="divider-vert"></div>
+    <div class="vline"></div>
     <div style="text-align:left">
-      <span class="role">Bride's Father</span>${INFO.brideFather}<br>
-      <span class="role">Bride's Mother</span>${INFO.brideMother}
+      <span class="p-role">신부측 부</span>
+      <div class="p-names">${INFO.brideFather}<br>${INFO.brideMother}</div>
     </div>
   </div>
-  <div class="couple-name">${INFO.groomName}<span class="amp">&</span>${INFO.brideName}</div>
+  <div class="couple-line">${INFO.groomName}<em>&</em>${INFO.brideName}</div>
 `;
 
-// 계좌번호
+// 계좌
 document.getElementById('accountBox').innerHTML = `
   <div class="account-card">
     <div class="account-role">Groom · 신랑</div>
-    <div class="account-info">
+    <div class="account-row">
       <div>
         <div class="account-name">${INFO.groomName}</div>
-        <div class="account-number">${INFO.groomAccount}</div>
+        <div class="account-num">${INFO.groomAccount}</div>
       </div>
-      <button class="copy-btn" onclick="copyAccount('${INFO.groomAccount}')">copy</button>
+      <button class="copy-btn" onclick="copyAccount('${INFO.groomAccount}')">복사</button>
     </div>
   </div>
   <div class="account-card">
     <div class="account-role">Bride · 신부</div>
-    <div class="account-info">
+    <div class="account-row">
       <div>
         <div class="account-name">${INFO.brideName}</div>
-        <div class="account-number">${INFO.brideAccount}</div>
+        <div class="account-num">${INFO.brideAccount}</div>
       </div>
-      <button class="copy-btn" onclick="copyAccount('${INFO.brideAccount}')">copy</button>
+      <button class="copy-btn" onclick="copyAccount('${INFO.brideAccount}')">복사</button>
     </div>
   </div>
 `;
@@ -898,26 +668,26 @@ document.getElementById('accountBox').innerHTML = `
   const target = new Date(INFO.weddingDate); target.setHours(0,0,0,0);
   const diff   = Math.ceil((target - today) / 86400000);
   const el = document.getElementById('ddayNum');
-  if (diff === 0)      el.parentElement.innerHTML = `<div class="dday-big">D—Day</div>`;
-  else if (diff < 0)   el.textContent = `+${Math.abs(diff)}`;
-  else                 el.textContent = diff;
+  if (diff === 0)     el.parentElement.innerHTML = `<div class="dday-num" style="font-size:64px;font-style:italic">D-Day</div>`;
+  else if (diff < 0)  el.textContent = `+${Math.abs(diff)}`;
+  else                el.textContent = diff;
 })();
 
-// ── 지도 (구글맵 embed) ──
+// ── 구글맵 ──
 (function() {
   const q = encodeURIComponent(INFO.address);
   document.getElementById('mapBox').innerHTML =
     `<iframe src="https://maps.google.com/maps?q=${q}&output=embed" allowfullscreen></iframe>`;
 })();
 
-function openKakao() { window.open(`https://map.kakao.com/link/to/${encodeURIComponent(INFO.place)},${INFO.lat},${INFO.lng}`, '_blank'); }
+function openKakao() { window.open(`https://map.kakao.com/link/search/${encodeURIComponent(INFO.place)}`, '_blank'); }
 function openNaver() { window.open(`https://map.naver.com/v5/search/${encodeURIComponent(INFO.address)}`, '_blank'); }
-function openTmap()  { window.open(`https://tmap.life/route?goalname=${encodeURIComponent(INFO.place)}&goalx=${INFO.lng}&goaly=${INFO.lat}`, '_blank'); }
+function openTmap()  { window.open(`https://tmap.life/route?goalname=${encodeURIComponent(INFO.place)}`, '_blank'); }
 
 // ── 계좌 복사 ──
 function copyAccount(text) {
   const num = text.match(/[\d\-]+/)?.[0] || text;
-  navigator.clipboard.writeText(num).then(() => showToast('계좌번호가 복사되었습니다'));
+  navigator.clipboard.writeText(num).then(() => showToast('계좌번호가 복사되었습니다 🌸'));
 }
 
 // ── 토스트 ──
@@ -928,7 +698,7 @@ function showToast(msg) {
   setTimeout(() => el.classList.remove('show'), 2200);
 }
 
-// ── 갤러리 라이트박스 ──
+// ── 갤러리 ──
 document.querySelectorAll('.gallery-item img').forEach(img => {
   img.addEventListener('click', () => {
     document.getElementById('lightboxImg').src = img.src;
@@ -939,6 +709,28 @@ function closeLightbox() { document.getElementById('lightbox').classList.remove(
 document.getElementById('lightbox').addEventListener('click', e => {
   if (e.target === e.currentTarget) closeLightbox();
 });
+
+// ── 꽃잎 낙하 ──
+(function() {
+  const container = document.getElementById('petals');
+  const colors = ['#f2c4ce','#e8a4b8','#f7e6d3','#d4789a','#fce8ef'];
+  for (let i = 0; i < 18; i++) {
+    const el = document.createElement('div');
+    el.className = 'petal';
+    const size = 6 + Math.random() * 10;
+    el.style.cssText = `
+      left: ${Math.random() * 100}%;
+      top: ${-20 - Math.random() * 40}px;
+      width: ${size}px;
+      height: ${size * 1.4}px;
+      background: ${colors[Math.floor(Math.random() * colors.length)]};
+      border-radius: 50% 10% 50% 10%;
+      animation-duration: ${6 + Math.random() * 8}s;
+      animation-delay: ${Math.random() * 8}s;
+    `;
+    container.appendChild(el);
+  }
+})();
 
 // ── 스크롤 애니메이션 ──
 const obs = new IntersectionObserver(entries => {
